@@ -1,5 +1,5 @@
-﻿using Sandbox;
-using System;
+﻿using System;
+using Sandbox;
 
 namespace RunnerVision;
 
@@ -7,15 +7,20 @@ public partial class PawnController
 {
 	Rotation GetVelocityRotation()
 	{
-		return Entity.Velocity.EulerAngles.ToRotation();
+		return Pawn.Velocity.EulerAngles.ToRotation();
 	}
 
-	bool AngleWithinRange(Vector3 directionVector1, Vector3 directionVector2, float minAngle = 0f, float maxAngle = 360f)
+	bool AngleWithinRange(
+		Vector3 directionVector1,
+		Vector3 directionVector2,
+		float minAngle = 0f,
+		float maxAngle = 360f
+	)
 	{
-		if ( directionVector1.Normal.Angle( directionVector2 ) > maxAngle )
+		if (directionVector1.Normal.Angle(directionVector2) > maxAngle)
 			return false;
 
-		if ( directionVector1.Normal.Angle( directionVector2 ) < minAngle )
+		if (directionVector1.Normal.Angle(directionVector2) < minAngle)
 			return false;
 
 		return true;
@@ -23,14 +28,14 @@ public partial class PawnController
 
 	Vector3 GetMoveVector()
 	{
-		var movement = Entity.InputDirection.Normal;
-		var angles = Entity.ViewAngles.WithPitch( 0 );
-		return Rotation.From( angles ) * movement * CurrentMaxSpeed;
+		var movement = Pawn.InputDirection.Normal;
+		var angles = Pawn.ViewAngles.WithPitch(0);
+		return Rotation.From(angles) * movement * CurrentMaxSpeed;
 	}
 
 	void UpdateDash()
 	{
-		if ( TimeSinceDash > 0.5f )
+		if (TimeSinceDash > 0.5f)
 			Dashing = 0;
 	}
 
@@ -39,13 +44,13 @@ public partial class PawnController
 		var cameraDirection = GetCameraDirection();
 		var forwardAngle = GetForwardAngle();
 
-		var forwardMultiplier = Math.Max( 0.5f, forwardAngle / 90f );
+		var forwardMultiplier = Math.Max(0.5f, forwardAngle / 90f);
 
-		var jumpVector = cameraDirection * 300f * forwardMultiplier + Entity.Rotation.Up * 300f;
+		var jumpVector = cameraDirection * 300f * forwardMultiplier + Pawn.WorldRotation.Up * 300f;
 
-		Entity.Velocity *= 0.5f;
+		Pawn.Velocity *= 0.5f;
 
-		Entity.ApplyAbsoluteImpulse( jumpVector );
+		Pawn.Rigidbody.ApplyImpulse(jumpVector);
 
 		previousWallrunNormal = CurrentWall.Normal;
 		Wallrunning = 0;
@@ -53,18 +58,18 @@ public partial class PawnController
 
 	Vector3 GetCameraDirection()
 	{
-		return Camera.Rotation.Forward.WithZ( 0 );
+		return Pawn.Camera.WorldRotation.Forward.WithZ(0);
 	}
 
 	float GetForwardAngle()
 	{
 		var cameraDirection = GetCameraDirection();
-		var forwardAngle = ForwardDirection.Angle( cameraDirection );
+		var forwardAngle = ForwardDirection.Angle(cameraDirection);
 
 		// Check angle from movement axis (max 90 degrees)
-		float dotProduct = Vector3.Dot( ForwardDirection, cameraDirection );
+		float dotProduct = Vector3.Dot(ForwardDirection, cameraDirection);
 
-		if ( dotProduct < 0 )
+		if (dotProduct < 0)
 		{
 			return 180 - forwardAngle;
 		}
@@ -74,13 +79,15 @@ public partial class PawnController
 
 	void InitiateDash()
 	{
-		if ( TimeSinceDash > 1.0f )
+		if (TimeSinceDash > 1.0f)
 		{
-			var isLeft = Input.Down( "left" );
+			var isLeft = Input.Down("left");
 
 			Dashing = isLeft ? 1 : 2;
 
-			Entity.ApplyAbsoluteImpulse( (isLeft ? Entity.Rotation.Left : Entity.Rotation.Right) * 300f );
+			Pawn.Rigidbody.ApplyImpulse(
+				(isLeft ? Pawn.WorldRotation.Left : Pawn.WorldRotation.Right) * 300f
+			);
 			CurrentMaxSpeed += 200f;
 
 			TimeSinceDash = 0.0f;
@@ -95,13 +102,13 @@ public partial class PawnController
 
 	void DoFall()
 	{
-		Entity.Velocity += Vector3.Down * (IsWallRunning() ? Gravity * 0.60f : Gravity) * Time.Delta;
+		Pawn.Velocity += Vector3.Down * (IsWallRunning() ? Gravity * 0.60f : Gravity) * Time.Delta;
 	}
 
 	void InitiateLandingOnFloor()
 	{
-		Sound.FromWorld( "concretefootstepland", Entity.Position + Vector3.Down * 10f );
-		AddEvent( "grounded" );
+		Sound.Play("concretefootstepland", Pawn.WorldPosition + Vector3.Down * 10f);
+		AddEvent("grounded");
 
 		Wallrunning = 0;
 		previousWallrunNormal = Vector3.Zero;
@@ -111,7 +118,7 @@ public partial class PawnController
 
 		Jumping = false;
 
-		if ( Entity.Velocity.WithZ(0).Length > 100f )
+		if (Pawn.Velocity.WithZ(0).Length > 100f)
 		{
 			CurrentMaxSpeed += 200;
 		}
@@ -119,19 +126,25 @@ public partial class PawnController
 
 	void UpdateMaxSpeed(Vector3 moveVector)
 	{
-		if ( moveVector.LengthSquared != 0 )
+		if (moveVector.LengthSquared != 0)
 		{
-			CurrentMaxSpeed = CurrentMaxSpeed.Approach( MaxSpeed, Time.Delta * 50f * SpeedGrowthRate );
+			CurrentMaxSpeed = CurrentMaxSpeed.Approach(
+				MaxSpeed,
+				Time.Delta * 50f * SpeedGrowthRate
+			);
 		}
 		else
 		{
-			CurrentMaxSpeed = CurrentMaxSpeed.Approach( StartingSpeed, Time.Delta * 50f * SpeedShrinkRate );
+			CurrentMaxSpeed = CurrentMaxSpeed.Approach(
+				StartingSpeed,
+				Time.Delta * 50f * SpeedShrinkRate
+			);
 		}
 	}
 
 	void ClampMaxSpeed()
 	{
-		CurrentMaxSpeed = Math.Min( CurrentMaxSpeed, MaxSpeed );
+		CurrentMaxSpeed = Math.Min(CurrentMaxSpeed, MaxSpeed);
 	}
 
 	bool IsDashing()
@@ -141,16 +154,16 @@ public partial class PawnController
 
 	bool ShouldDash()
 	{
-		if ( Ducking )
+		if (Ducking)
 			return false;
 
-		if ( !Grounded )
+		if (!Grounded)
 			return false;
 
-		if ( Input.Down( "forward" ) )
+		if (Input.Down("forward"))
 			return false;
 
-		if ( !Input.Down( "left" ) && !Input.Down( "right" ) )
+		if (!Input.Down("left") && !Input.Down("right"))
 			return false;
 
 		return true;
@@ -158,12 +171,12 @@ public partial class PawnController
 
 	void HandleNoclipping()
 	{
-		var movement = Entity.InputDirection.Normal;
-		var angles = Entity.ViewAngles;
-		var moveVector = Rotation.From( angles ) * movement * 10f;
+		var movement = Pawn.InputDirection.Normal;
+		var angles = Pawn.ViewAngles;
+		var moveVector = Rotation.From(angles) * movement * 10f;
 
-		Entity.Transform = Entity.Transform.Add( moveVector, true );
-		Entity.Velocity = 0;
+		Pawn.WorldTransform = Pawn.WorldTransform.Add(moveVector, true);
+		Pawn.Velocity = 0;
 	}
 
 	void IncreaseDeltaTime()
@@ -178,104 +191,110 @@ public partial class PawnController
 
 	void UpdateFootsteps()
 	{
-		float speed = Entity.Velocity.Length;
+		float speed = Pawn.Velocity.Length;
 
-		if ( Game.IsServer )
+		// if (Game.IsServer)
+		// 	return;
+
+		if (speed == 0f)
 			return;
 
-		if ( speed == 0f )
-			return;
-
-		if ( !Grounded && !IsWallRunning() && !Climbing )
+		if (!Grounded && !IsWallRunning() && !Climbing)
 			return;
 
 		float nextStep = 70f / speed;
 		String footstepSound = speed < 300 ? "concretefootstepwalk" : "concretefootsteprun";
-		String footstepReleaseSound = IsWallRunning() ? "concretefootstepwallrunrelease" : "concretefootsteprunrelease";
+		String footstepReleaseSound = IsWallRunning()
+			? "concretefootstepwallrunrelease"
+			: "concretefootsteprunrelease";
 
-		if ( IsWallRunning() )
+		if (IsWallRunning())
 		{
 			nextStep = 60f / speed;
 			footstepSound = "concretefootstepwallrun";
 		}
 
-		if ( Climbing )
+		if (Climbing)
 		{
 			nextStep = 0.2f;
 			footstepSound = "concretefootstepwallrun";
 		}
 
-		if ( TimeSinceLastFootstep > nextStep )
+		if (TimeSinceLastFootstep > nextStep)
 		{
-			Sound.FromWorld( footstepSound, Entity.Position + Vector3.Down * 10f );
+			Sound.Play(footstepSound, Pawn.WorldPosition + Vector3.Down * 10f);
 
 			TimeSinceLastFootstep = 0f;
 		}
 
-		if ( TimeSinceLastFootstepRelease > nextStep * 1.15 && speed > StartFootSoundVelocity )
+		if (TimeSinceLastFootstepRelease > nextStep * 1.15 && speed > StartFootSoundVelocity)
 		{
-			Sound.FromWorld( footstepReleaseSound, Entity.Position + Vector3.Down * 10f );
+			Sound.Play(footstepReleaseSound, Pawn.WorldPosition + Vector3.Down * 10f);
 
 			TimeSinceLastFootstepRelease = 0f;
 		}
 	}
 
-	void AdjustSharpTurn( Vector3 moveVector )
+	void AdjustSharpTurn(Vector3 moveVector)
 	{
-		if ( Entity.Velocity.Angle( moveVector.Normal * moveVector.Length ) > SharpTurnAngle )
+		if (Pawn.Velocity.Angle(moveVector.Normal * moveVector.Length) > SharpTurnAngle)
 		{
-			CurrentMaxSpeed = CurrentMaxSpeed.Approach( StartingSpeed, Time.Delta * 50f * SpeedShrinkRate );
+			CurrentMaxSpeed = CurrentMaxSpeed.Approach(
+				StartingSpeed,
+				Time.Delta * 50f * SpeedShrinkRate
+			);
 		}
 	}
 
 	void InitiateJump()
 	{
 		Jumping = true;
-		Entity.Velocity = ApplyJump( Entity.Velocity, "jump" );
+		Pawn.Velocity = ApplyJump(Pawn.Velocity, "jump");
 	}
 
 	bool CanJump()
 	{
-		if ( !Grounded )
+		if (!Grounded)
 			return false;
 
-		if ( IsVaulting() )
+		if (IsVaulting())
 			return false;
 
-		if ( IsDashing() )
+		if (IsDashing())
 			return false;
 
-		if ( IsWallRunning() )
+		if (IsWallRunning())
 			return false;
 
-		if ( IsDucking() )
+		if (IsDucking())
 			return false;
 
 		return true;
 	}
 
-	Entity CheckForGround()
+	GameObject CheckForGround()
 	{
-		if ( Entity.Velocity.z > 100f )
+		if (Pawn.Velocity.z > 100f)
 			return null;
 
-		var trace = Entity.TraceBBox( Entity.Position, Entity.Position + Vector3.Down, 2f );
+		var trace = Pawn.TraceBBox(Pawn.WorldPosition, Pawn.WorldPosition + Vector3.Down, 2f);
 
-		if ( !trace.Hit )
+		if (!trace.Hit)
 			return null;
 
-		if ( trace.Normal.Angle( Vector3.Up ) > GroundAngle )
+		if (trace.Normal.Angle(Vector3.Up) > GroundAngle)
 			return null;
 
-		return trace.Entity;
+		return trace.GameObject;
 	}
 
-	Vector3 ApplyFriction( Vector3 velocity, float frictionAmount )
+	Vector3 ApplyFriction(Vector3 velocity, float frictionAmount)
 	{
 		float StopSpeed = 100.0f;
 
 		var speed = velocity.Length;
-		if ( speed < 0.1f ) return velocity;
+		if (speed < 0.1f)
+			return velocity;
 
 		// Bleed off some speed, but if we have less than the bleed
 		// threshold, bleed the threshold amount.
@@ -286,8 +305,10 @@ public partial class PawnController
 
 		// scale the velocity
 		float newspeed = speed - drop;
-		if ( newspeed < 0 ) newspeed = 0;
-		if ( newspeed == speed ) return velocity;
+		if (newspeed < 0)
+			newspeed = 0;
+		if (newspeed == speed)
+			return velocity;
 
 		newspeed /= speed;
 		velocity *= newspeed;
@@ -295,27 +316,33 @@ public partial class PawnController
 		return velocity;
 	}
 
-	void DoMovement( Vector3 moveVector )
+	void DoMovement(Vector3 moveVector)
 	{
-		if ( ShouldAccelerate() )
-			DoAccelerate( moveVector );
+		if (ShouldAccelerate())
+			DoAccelerate(moveVector);
 
 		DoApplyFriction();
 	}
 
-	void DoAccelerate( Vector3 moveVector )
+	void DoAccelerate(Vector3 moveVector)
 	{
-		Entity.Velocity = Accelerate( Entity.Velocity, moveVector.Normal, moveVector.Length, CurrentMaxSpeed, Acceleration );
+		Pawn.Velocity = Accelerate(
+			Pawn.Velocity,
+			moveVector.Normal,
+			moveVector.Length,
+			CurrentMaxSpeed,
+			Acceleration
+		);
 	}
 
 	void DoApplyFriction()
 	{
-		Entity.Velocity = ApplyFriction( Entity.Velocity, GetFriction() );
+		Pawn.Velocity = ApplyFriction(Pawn.Velocity, GetFriction());
 	}
 
 	bool ShouldAccelerate()
 	{
-		if ( IsSliding() )
+		if (IsSliding())
 			return false;
 
 		return true;
@@ -323,73 +350,83 @@ public partial class PawnController
 
 	float GetFriction()
 	{
-		if ( IsSliding() )
+		if (IsSliding())
 			return Friction * 0.5f;
 
 		return Friction;
 	}
 
-	Vector3 Accelerate( Vector3 velocity, Vector3 wishdir, float wishspeed, float speedLimit, float acceleration )
+	Vector3 Accelerate(
+		Vector3 velocity,
+		Vector3 wishdir,
+		float wishspeed,
+		float speedLimit,
+		float acceleration
+	)
 	{
-		if ( speedLimit > 0 && wishspeed > speedLimit )
+		if (speedLimit > 0 && wishspeed > speedLimit)
 			wishspeed = speedLimit;
 
-		velocity = velocity.LerpTo( wishdir * wishspeed, Time.Delta * 45f * acceleration );
+		velocity = velocity.LerpTo(wishdir * wishspeed, Time.Delta * 45f * acceleration);
 
 		return velocity;
 	}
 
-	Vector3 ApplyJump( Vector3 velocity, string jumpType )
+	Vector3 ApplyJump(Vector3 velocity, string jumpType)
 	{
-		AddEvent( jumpType );
+		AddEvent(jumpType);
 		return velocity.WithZ(0) + Vector3.Up * JumpSpeed;
 	}
 
-	void UpdateMoveHelper( Entity groundEntity )
+	void UpdateMoveHelper(GameObject groundEntity)
 	{
-		var mh = new MoveHelper( Entity.Position, Entity.Velocity );
-		mh.Trace = mh.Trace.Size( Entity.Hull ).Ignore( Entity );
+		var mh = new CharacterControllerHelper(Scene.Trace, Pawn.WorldPosition, Pawn.Velocity);
+		mh.Trace = mh.Trace.Size(Pawn.Hull).IgnoreGameObjectHierarchy(Pawn.GameObject);
 
-		if ( mh.TryMoveWithStep( Time.Delta, StepSize ) > 0 )
+		if (mh.TryMoveWithStep(Time.Delta, StepSize) > 0)
 		{
-			if ( Grounded )
+			if (Grounded)
 			{
-				mh.Position = StayOnGround( mh.Position );
+				mh.Position = StayOnGround(mh.Position);
 			}
-			Entity.Position = mh.Position;
-			Entity.Velocity = mh.Velocity;
+			Pawn.WorldPosition = mh.Position;
+			Pawn.Velocity = mh.Velocity;
 		}
 
-		Entity.GroundEntity = groundEntity;
+		Pawn.GroundEntity = groundEntity;
 	}
 
-	Vector3 StayOnGround( Vector3 position )
+	Vector3 StayOnGround(Vector3 position)
 	{
 		var start = position + Vector3.Up * 2;
 		var end = position + Vector3.Down * StepSize;
 
 		// See how far up we can go without getting stuck
-		var trace = Entity.TraceBBox( position, start );
+		var trace = Pawn.TraceBBox(position, start);
 		start = trace.EndPosition;
 
 		// Now trace down from a known safe position
-		trace = Entity.TraceBBox( start, end );
+		trace = Pawn.TraceBBox(start, end);
 
-		if ( trace.Fraction <= 0 ) return position;
-		if ( trace.Fraction >= 1 ) return position;
-		if ( trace.StartedSolid ) return position;
-		if ( Vector3.GetAngle( Vector3.Up, trace.Normal ) > GroundAngle ) return position;
+		if (trace.Fraction <= 0)
+			return position;
+		if (trace.Fraction >= 1)
+			return position;
+		if (trace.StartedSolid)
+			return position;
+		if (Vector3.GetAngle(Vector3.Up, trace.Normal) > GroundAngle)
+			return position;
 
 		return trace.EndPosition;
 	}
 
 	float GetSpeed()
 	{
-		return Entity.Velocity.Length;
+		return Pawn.Velocity.Length;
 	}
 
 	float GetHorizontalSpeed()
 	{
-		return Entity.Velocity.WithZ( 0 ).Length;
+		return Pawn.Velocity.WithZ(0).Length;
 	}
 }

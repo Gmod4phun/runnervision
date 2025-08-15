@@ -1,5 +1,5 @@
-﻿using Sandbox;
-using System;
+﻿using System;
+using Sandbox;
 
 namespace RunnerVision;
 
@@ -20,14 +20,14 @@ public partial class PawnController
 	void InitiateVault()
 	{
 		var speed = GetSpeed();
-		var rayDistance = GetRayDistance( speed );
+		var rayDistance = GetRayDistance(speed);
 
-		if ( !CanVault( speed, rayDistance ) )
+		if (!CanVault(speed, rayDistance))
 			return;
 
-		bool successfulVault = TryVaulting( rayDistance );
+		bool successfulVault = TryVaulting(rayDistance);
 
-		if ( successfulVault )
+		if (successfulVault)
 			SetupVault();
 	}
 
@@ -54,9 +54,9 @@ public partial class PawnController
 
 		bezierCounter += (vaultSpeed / 85) * Time.Delta;
 
-		Entity.Position = Entity.Position.LerpTo( pos, Time.Delta * 50f );
+		Pawn.WorldPosition = Pawn.WorldPosition.LerpTo(pos, Time.Delta * 50f);
 
-		if ( bezierCounter >= 1.0f )
+		if (bezierCounter >= 1.0f)
 			Vaulting = 0;
 	}
 
@@ -65,48 +65,41 @@ public partial class PawnController
 		parkouredSinceJumping = true;
 		parkouredBeforeLanding = true;
 
-		VaultStartPos = Entity.Position;
+		VaultStartPos = Pawn.WorldPosition;
 		bezierCounter = 0f;
 
-		var vaultDirection = (VaultTargetPos - Entity.Position).WithZ( 0 ).Normal;
+		var vaultDirection = (VaultTargetPos - Pawn.WorldPosition).WithZ(0).Normal;
 		var speedAfterVault = GetSpeedAfterVault();
 
-		Entity.Velocity = vaultDirection * speedAfterVault + vaultAdditionalVelocity;
+		Pawn.Velocity = vaultDirection * speedAfterVault + vaultAdditionalVelocity;
 
 		ResetVaultAdditionalVelocity();
 	}
 
 	float GetSpeedAfterVault()
 	{
-		switch( Vaulting )
+		switch (Vaulting)
 		{
 			case VaultType.OntoHigh:
 				return 0;
 		}
 
-		return Entity.Velocity.WithZ( 0 ).Length;
+		return Pawn.Velocity.WithZ(0).Length;
 	}
 
 	bool CanVault(float speed, float rayDistance)
 	{
-		if ( Grounded && !Input.Down( "forward" ) )
+		if (Grounded && !Input.Down("forward"))
 			return false;
 
-		BBox boxFront = GetBoxFront( rayDistance );
+		BBox boxFront = GetBoxFront(rayDistance);
 
-		var traceFront = Trace.Box(
-			bbox: boxFront,
-			from: 0, to: 0
-		).Run();
+		var traceFront = Scene.Trace.Box(bbox: boxFront, from: 0, to: 0).Run();
 
-		if ( debugMode )
-			DebugOverlay.Box(
-				bounds: boxFront,
-				color: Color.Red,
-				duration: showDebugTime
-			);
+		if (debugMode)
+			DebugOverlay.Box(box: boxFront, color: Color.Red, duration: showDebugTime);
 
-		if ( !traceFront.Hit )
+		if (!traceFront.Hit)
 			return false;
 
 		return true;
@@ -114,45 +107,42 @@ public partial class PawnController
 
 	float GetRayDistance(float speed)
 	{
-		return Math.Max( (speed / 500) * 60f, 30f );
+		return Math.Max((speed / 500) * 60f, 30f);
 	}
 
 	bool TryVaulting(float rayDistance)
 	{
 		var distanceBehindObstacle = rayDistance * 1.20f + 60f;
-		var boxBehindObstacle = GetBoxBehindObstacle( distanceBehindObstacle );
+		var boxBehindObstacle = GetBoxBehindObstacle(distanceBehindObstacle);
 		var boxAboveWall = GetBoxAboveWall();
 
 		bool successfulVault = false;
 
-		if ( ShouldVaultOver( boxBehindObstacle, distanceBehindObstacle ) )
+		if (ShouldVaultOver(boxBehindObstacle, distanceBehindObstacle))
 		{
-			successfulVault = TryVaultOver( rayDistance, boxBehindObstacle );
+			successfulVault = TryVaultOver(rayDistance, boxBehindObstacle);
 		}
-		else if ( ShouldVaultOnto() )
+		else if (ShouldVaultOnto())
 		{
-			successfulVault = TryVaultOnto( rayDistance );
+			successfulVault = TryVaultOnto(rayDistance);
 		}
-		else if ( ShouldVaultOntoHigh( boxAboveWall ) )
+		else if (ShouldVaultOntoHigh(boxAboveWall))
 		{
-			successfulVault = TryVaultOntoHigh( boxAboveWall );
+			successfulVault = TryVaultOntoHigh(boxAboveWall);
 		}
 
 		return successfulVault;
 	}
 
-	bool ShouldVaultOntoHigh( BBox boxAboveWall )
+	bool ShouldVaultOntoHigh(BBox boxAboveWall)
 	{
-		if ( Grounded )
+		if (Grounded)
 			return false;
 
-		var traceBoxAboveWall = Trace.Box(
-			bbox: boxAboveWall,
-			from: 0, to: 0
-		).Run();
+		var traceBoxAboveWall = Scene.Trace.Box(bbox: boxAboveWall, from: 0, to: 0).Run();
 
-		if ( debugMode )
-			DebugOverlay.Box( bounds: boxAboveWall, Color.Magenta, duration: showDebugTime );
+		if (debugMode)
+			DebugOverlay.Box(box: boxAboveWall, Color.Magenta, duration: showDebugTime);
 
 		return !traceBoxAboveWall.Hit;
 	}
@@ -165,15 +155,15 @@ public partial class PawnController
 			offsetBottom: -60f
 		);
 
-		if ( groundPosition != Vector3.Zero )
-			VaultOntoHigh( groundPosition );
+		if (groundPosition != Vector3.Zero)
+			VaultOntoHigh(groundPosition);
 		else
 			return false;
 
 		return true;
 	}
 
-	void VaultOntoHigh( Vector3 groundPosition )
+	void VaultOntoHigh(Vector3 groundPosition)
 	{
 		VaultTargetPos = groundPosition + Vector3.Up * 13f;
 		Vaulting = VaultType.OntoHigh;
@@ -185,10 +175,10 @@ public partial class PawnController
 
 	bool ShouldVaultOnto()
 	{
-		if ( IsClimbing() )
+		if (IsClimbing())
 			return false;
 
-		if ( IsFalling() )
+		if (IsFalling())
 			return false;
 
 		return true;
@@ -196,23 +186,22 @@ public partial class PawnController
 
 	bool ShouldVaultOver(BBox boxBehindObstacle, float distanceBehindObstacle)
 	{
-		if ( debugMode )
-			DebugOverlay.Box( bounds: boxBehindObstacle, color: Color.Blue, duration: showDebugTime );
+		if (debugMode)
+			DebugOverlay.Box(box: boxBehindObstacle, color: Color.Blue, duration: showDebugTime);
 
-		var traceBehindObstacle = Trace.Box(
-			bbox: boxBehindObstacle,
-			from: 0, to: 0
-		).Run();
+		var traceBehindObstacle = Scene.Trace.Box(bbox: boxBehindObstacle, from: 0, to: 0).Run();
 
 		// Make sure we are not vaulting inside map geometry
-		var traceWallFailsafe = GetTraceWallFailSafe( distanceBehindObstacle );
+		var traceWallFailsafe = GetTraceWallFailSafe(distanceBehindObstacle);
 
-		var hitFailsafe = traceWallFailsafe.Entity?.IsValid == true; //bool? needs to be converted to bool
+		var hitFailsafe = traceWallFailsafe.GameObject?.IsValid == true; //bool? needs to be converted to bool
 
-		if ( debugMode )
+		if (debugMode)
 			DebugOverlay.Line(
-				start: Entity.Position + Entity.Rotation.Up * 60f,
-				end: Entity.Position + Entity.Rotation.Up * 60f + Entity.Rotation.Forward * distanceBehindObstacle,
+				from: Pawn.WorldPosition + Pawn.WorldRotation.Up * 60f,
+				to: Pawn.WorldPosition
+					+ Pawn.WorldRotation.Up * 60f
+					+ Pawn.WorldRotation.Forward * distanceBehindObstacle,
 				duration: showDebugTime
 			);
 
@@ -221,8 +210,8 @@ public partial class PawnController
 
 	bool TryVaultOver(float rayDistance, BBox boxBehindObstacle)
 	{
-		if ( CanVaultOver( rayDistance ) )
-			VaultOver( boxBehindObstacle );
+		if (CanVaultOver(rayDistance))
+			VaultOver(boxBehindObstacle);
 		else
 			return false;
 
@@ -232,27 +221,31 @@ public partial class PawnController
 	bool TryVaultOnto(float rayDistance)
 	{
 		// Make sure there's enough space to stand on obstacle
-		var topBoxLarge = GetTopBoxLarge( rayDistance );
+		var topBoxLarge = GetTopBoxLarge(rayDistance);
 
-		if ( !CanVaultOnto( topBoxLarge ) )
+		if (!CanVaultOnto(topBoxLarge))
 			return false;
 
-		var groundPosition = TraceGroundVaultOnto( topBoxLarge );
+		var groundPosition = TraceGroundVaultOnto(topBoxLarge);
 
-		if ( groundPosition != Vector3.Zero )
-			VaultOnto( groundPosition );
+		if (groundPosition != Vector3.Zero)
+			VaultOnto(groundPosition);
 		else
 			return false;
 
 		return true;
 	}
 
-	TraceResult GetTraceWallFailSafe( float distanceBehindObstacle )
+	SceneTraceResult GetTraceWallFailSafe(float distanceBehindObstacle)
 	{
-		return Trace.Ray(
-			from: Entity.Position + Entity.Rotation.Up * 60f,
-			to: Entity.Position + Entity.Rotation.Up * 60f + Entity.Rotation.Forward * distanceBehindObstacle
-		).Run();
+		return Scene
+			.Trace.Ray(
+				from: Pawn.WorldPosition + Pawn.WorldRotation.Up * 60f,
+				to: Pawn.WorldPosition
+					+ Pawn.WorldRotation.Up * 60f
+					+ Pawn.WorldRotation.Forward * distanceBehindObstacle
+			)
+			.Run();
 	}
 
 	BBox GetBoxAboveWall()
@@ -262,15 +255,21 @@ public partial class PawnController
 		var offsetForward = 40f;
 
 		return new BBox(
-			mins: Vector3.Forward * +boxRadius + Vector3.Up * offsetBottom + Vector3.Left * boxRadius,
+			mins: Vector3.Forward * +boxRadius
+				+ Vector3.Up * offsetBottom
+				+ Vector3.Left * boxRadius,
 			maxs: Vector3.Forward * -boxRadius + Vector3.Up * offsetTop + Vector3.Right * boxRadius
-		).Translate( Entity.Position + Entity.Rotation.Forward * offsetForward );
+		).Translate(Pawn.WorldPosition + Pawn.WorldRotation.Forward * offsetForward);
 	}
 
-	BBox GetBoxFront( float rayDistance )
+	BBox GetBoxFront(float rayDistance)
 	{
-		return new BBox( center: 0, size: 35f )
-			.Translate( Entity.Position + Entity.Rotation.Forward * rayDistance + Entity.Rotation.Up * 30f );
+		return BBox.FromPositionAndSize(center: 0, size: 35f)
+			.Translate(
+				Pawn.WorldPosition
+					+ Pawn.WorldRotation.Forward * rayDistance
+					+ Pawn.WorldRotation.Up * 30f
+			);
 	}
 
 	BBox GetTopBoxLarge(float rayDistance)
@@ -278,130 +277,126 @@ public partial class PawnController
 		return new BBox(
 			mins: Vector3.Forward * +boxRadius + Vector3.Up * 45f + Vector3.Left * boxRadius,
 			maxs: Vector3.Forward * -boxRadius + Vector3.Up * 120f + Vector3.Right * boxRadius
-		).Translate( Entity.Position + Entity.Rotation.Forward * rayDistance );
+		).Translate(Pawn.WorldPosition + Pawn.WorldRotation.Forward * rayDistance);
 	}
 
-	BBox GetBoxBehindObstacle( float distanceBehindObstacle )
+	BBox GetBoxBehindObstacle(float distanceBehindObstacle)
 	{
 		return new BBox(
 			mins: Vector3.Forward * +boxRadius + Vector3.Up * 70f + Vector3.Left * boxRadius,
 			maxs: Vector3.Forward * -boxRadius + Vector3.Right * boxRadius
-		).Translate( Entity.Position + Entity.Rotation.Forward * distanceBehindObstacle );
+		).Translate(Pawn.WorldPosition + Pawn.WorldRotation.Forward * distanceBehindObstacle);
 	}
 
-	bool CanVaultOver( float rayDistance )
+	bool CanVaultOver(float rayDistance)
 	{
-		if ( GetSpeed().AlmostEqual( 0f ) )
+		if (GetSpeed().AlmostEqual(0f))
 			return false;
 
 		// Check if there's space to vault over
 		var topBoxSmall = new BBox(
 			mins: Vector3.Forward * +boxRadius + Vector3.Up * 50f + Vector3.Left * boxRadius,
 			maxs: Vector3.Forward * -boxRadius + Vector3.Up * 80f + Vector3.Right * boxRadius
-		).Translate( Entity.Position + Entity.Rotation.Forward * rayDistance );
+		).Translate(Pawn.WorldPosition + Pawn.WorldRotation.Forward * rayDistance);
 
-		var traceBoxSmallAboveObstacle = Trace.Box(
-			bbox: topBoxSmall,
-			from: 0, to: 0
-		).Run();
+		var traceBoxSmallAboveObstacle = Scene.Trace.Box(bbox: topBoxSmall, from: 0, to: 0).Run();
 
-		if ( debugMode )
-			DebugOverlay.Box( bounds: topBoxSmall, color: Color.Green, duration: showDebugTime );
+		if (debugMode)
+			DebugOverlay.Box(box: topBoxSmall, color: Color.Green, duration: showDebugTime);
 
 		return !traceBoxSmallAboveObstacle.Hit;
 	}
 
-	void VaultOver( BBox boxBehindObstacle )
+	void VaultOver(BBox boxBehindObstacle)
 	{
 		// Cast a ray to check where the ground is
-		var traceObstacleSurface = Trace.Ray(
-			from: boxBehindObstacle.Center + Entity.Rotation.Up * 30f,
-			to: boxBehindObstacle.Center + Entity.Rotation.Up * -50f
-		).Run();
+		var traceObstacleSurface = Scene
+			.Trace.Ray(
+				from: boxBehindObstacle.Center + Pawn.WorldRotation.Up * 30f,
+				to: boxBehindObstacle.Center + Pawn.WorldRotation.Up * -50f
+			)
+			.Run();
 
-		if ( debugMode )
+		if (debugMode)
 			DebugOverlay.Line(
-				start: boxBehindObstacle.Center + Entity.Rotation.Up * 30f,
-				end: boxBehindObstacle.Center + Entity.Rotation.Up * -50f,
-				color: Color.Blue, duration: showDebugTime
+				from: boxBehindObstacle.Center + Pawn.WorldRotation.Up * 30f,
+				to: boxBehindObstacle.Center + Pawn.WorldRotation.Up * -50f,
+				color: Color.Blue,
+				duration: showDebugTime
 			);
 
 		Vaulting = VaultType.Over;
 		vaultSpeed = 200f;
 
-		if ( traceObstacleSurface.Hit )
+		if (traceObstacleSurface.Hit)
 		{
-			VaultOverAndLand( traceObstacleSurface );
+			VaultOverAndLand(traceObstacleSurface);
 		}
 		else
 		{
-			VaultOverAndFall( boxBehindObstacle );
+			VaultOverAndFall(boxBehindObstacle);
 		}
 	}
 
-	void VaultOverAndLand(TraceResult traceObstacleSurface )
+	void VaultOverAndLand(SceneTraceResult traceObstacleSurface)
 	{
-		var groundPosition = traceObstacleSurface.HitPosition + Entity.Rotation.Up * 5f;
+		var groundPosition = traceObstacleSurface.HitPosition + Pawn.WorldRotation.Up * 5f;
 		VaultTargetPos = groundPosition;
 	}
 
-	void VaultOverAndFall( BBox boxBehindObstacle )
+	void VaultOverAndFall(BBox boxBehindObstacle)
 	{
-		VaultTargetPos = boxBehindObstacle.Center + Entity.Rotation.Up * -40f;
+		VaultTargetPos = boxBehindObstacle.Center + Pawn.WorldRotation.Up * -40f;
 		vaultAdditionalVelocity = Vector3.Down * 50f;
 	}
 
-	bool CanVaultOnto( BBox topBoxLarge )
+	bool CanVaultOnto(BBox topBoxLarge)
 	{
-		if ( GetSpeed().AlmostEqual( 0f ) )
+		if (GetSpeed().AlmostEqual(0f))
 			return false;
 
-		var traceBoxLargeAboveObstacle = Trace.Box(
-			bbox: topBoxLarge,
-			from: 0, to: 0
-		).Run();
+		var traceBoxLargeAboveObstacle = Scene.Trace.Box(bbox: topBoxLarge, from: 0, to: 0).Run();
 
-		if ( debugMode )
-			DebugOverlay.Box( bounds: topBoxLarge, color: Color.Green, duration: showDebugTime );
+		if (debugMode)
+			DebugOverlay.Box(box: topBoxLarge, color: Color.Green, duration: showDebugTime);
 
 		return !traceBoxLargeAboveObstacle.Hit;
 	}
 
-	Vector3 TraceGroundVaultOnto( BBox topBoxLarge )
+	Vector3 TraceGroundVaultOnto(BBox topBoxLarge)
 	{
-		return TraceGroundWithBox(
-			bbox: topBoxLarge,
-			offsetTop: 30f,
-			offsetBottom: -60f
-		);
+		return TraceGroundWithBox(bbox: topBoxLarge, offsetTop: 30f, offsetBottom: -60f);
 	}
 
-	Vector3 TraceGroundWithBox( BBox bbox, float offsetTop, float offsetBottom )
+	Vector3 TraceGroundWithBox(BBox bbox, float offsetTop, float offsetBottom)
 	{
 		// Cast a ray to check where the ground is
-		var traceGround = Trace.Ray(
-			from: bbox.Center + Entity.Rotation.Up * offsetTop,
-			to: bbox.Center + Entity.Rotation.Up * offsetBottom
-		).Run();
+		var traceGround = Scene
+			.Trace.Ray(
+				from: bbox.Center + Pawn.WorldRotation.Up * offsetTop,
+				to: bbox.Center + Pawn.WorldRotation.Up * offsetBottom
+			)
+			.Run();
 
-		if ( debugMode )
+		if (debugMode)
 			DebugOverlay.Line(
-				start: bbox.Center + Entity.Rotation.Up * offsetTop,
-				end: bbox.Center + Entity.Rotation.Up * offsetBottom,
-				color: Color.Blue, duration: showDebugTime
+				from: bbox.Center + Pawn.WorldRotation.Up * offsetTop,
+				to: bbox.Center + Pawn.WorldRotation.Up * offsetBottom,
+				color: Color.Blue,
+				duration: showDebugTime
 			);
 
-		if ( !traceGround.Hit )
+		if (!traceGround.Hit)
 			return Vector3.Zero;
 
 		return traceGround.HitPosition;
 	}
 
-	void VaultOnto( Vector3 groundPosition )
+	void VaultOnto(Vector3 groundPosition)
 	{
 		VaultTargetPos = groundPosition + Vector3.Up * 13f;
 		Vaulting = VaultType.Onto;
-		vaultSpeed = Math.Max( Entity.Velocity.Length, 200f );
+		vaultSpeed = Math.Max(Pawn.Velocity.Length, 200f);
 	}
 
 	private void ResetVaultAdditionalVelocity()

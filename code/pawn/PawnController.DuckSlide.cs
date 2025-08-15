@@ -1,15 +1,15 @@
-﻿using Sandbox;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sandbox;
 
 namespace RunnerVision;
 
 public partial class PawnController
 {
-	private Sound slideSoundLoop;
+	// private Sound slideSoundLoop; // TODO: Implement sliding sound
 
 	public void TryDucking()
 	{
@@ -29,7 +29,7 @@ public partial class PawnController
 
 	public void UpdateDuck()
 	{
-		if ( IsDucking() )
+		if (IsDucking())
 		{
 			CurrentMaxSpeed = 450f;
 		}
@@ -37,7 +37,7 @@ public partial class PawnController
 
 	public void TrySliding()
 	{
-		if ( ShouldSlide() )
+		if (ShouldSlide())
 		{
 			InitiateSlide();
 		}
@@ -45,16 +45,16 @@ public partial class PawnController
 
 	public bool ShouldSlide()
 	{
-		if ( !Grounded )
+		if (!Grounded)
 			return false;
 
-		if ( !IsDucking() )
+		if (!IsDucking())
 			return false;
 
-		if ( !IsSliding() && GetHorizontalSpeed() < 100f )
+		if (!IsSliding() && GetHorizontalSpeed() < 100f)
 			return false;
 
-		if ( IsSliding() && GetHorizontalSpeed() < 100f )
+		if (IsSliding() && GetHorizontalSpeed() < 100f)
 			return false;
 
 		return true;
@@ -62,7 +62,7 @@ public partial class PawnController
 
 	public void InitiateSlide()
 	{
-		Entity.ApplyAbsoluteImpulse( Entity.Rotation.Forward * 100f );
+		Pawn.Rigidbody.ApplyImpulse(Pawn.WorldRotation.Forward * 100f);
 		PlaySlideSounds();
 
 		Sliding = true;
@@ -70,9 +70,9 @@ public partial class PawnController
 
 	public void UpdateSlide()
 	{
-		if ( IsSliding() )
+		if (IsSliding())
 		{
-			if ( !ShouldSlide() )
+			if (!ShouldSlide())
 				StopSliding();
 		}
 		else
@@ -80,15 +80,15 @@ public partial class PawnController
 			TrySliding();
 		}
 
-		if ( slideSoundLoop.IsPlaying && !IsSliding() )
-		{
-			slideSoundLoop.SetVolume( 1.0f - TimeSinceSlideStopped * 2 );
+		// if ( slideSoundLoop.IsPlaying && !IsSliding() )
+		// {
+		// 	slideSoundLoop.SetVolume( 1.0f - TimeSinceSlideStopped * 2 );
 
-			if ( TimeSinceSlideStopped > 0.5f )
-			{
-				slideSoundLoop.Stop();
-			}
-		}
+		// 	if ( TimeSinceSlideStopped > 0.5f )
+		// 	{
+		// 		slideSoundLoop.Stop();
+		// 	}
+		// }
 	}
 
 	public bool IsSliding()
@@ -111,12 +111,12 @@ public partial class PawnController
 
 	public void PlaySlideStart()
 	{
-		Sound.FromWorld( "concretefootstepslidestart", Entity.Position + Vector3.Down * 10f );
+		Sound.Play("concretefootstepslidestart", Pawn.WorldPosition + Vector3.Down * 10f);
 	}
 
 	public void PlaySlideLoop()
 	{
-		slideSoundLoop.Stop();
-		slideSoundLoop = Entity.PlaySound( "concretefootstepslideloop" );
+		// slideSoundLoop.Stop();
+		// slideSoundLoop = Entity.PlaySound( "concretefootstepslideloop" );
 	}
 }

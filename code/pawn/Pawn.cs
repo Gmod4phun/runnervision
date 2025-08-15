@@ -1,18 +1,12 @@
 ﻿using Sandbox;
-using System.ComponentModel;
 using static RunnerVision.PawnController;
 
 namespace RunnerVision;
 
-public partial class Pawn : AnimatedEntity
+public partial class Pawn : Component
 {
-	[Net, Predicted]
-	public Weapon ActiveWeapon { get; set; }
-
-	[ClientInput]
 	public Vector3 InputDirection { get; set; }
 
-	[ClientInput]
 	public Angles ViewAngles { get; set; }
 
 	public float CameraTiltDeadzone => 10f;
@@ -26,46 +20,29 @@ public partial class Pawn : AnimatedEntity
 
 	private Angles PreviousViewAngles { get; set; }
 
-	public CameraPostProcessing PostProcessing { get; set; }
+	[Property]
+	public SkinnedModelRenderer Renderer => Components.Get<SkinnedModelRenderer>();
 
-	[Net, Predicted]
-	public AnimatedEntity CameraHelper { get; set; }
+	[Property]
+	public Rigidbody Rigidbody => Components.Get<Rigidbody>();
+
+	[Property]
+	public GameObject CameraHelper { get; set; }
+
+	[Property]
+	public CameraComponent Camera { get; set; }
+
+	public GameObject GroundEntity { get; set; }
+
+	public Vector3 Velocity
+	{
+		get => Rigidbody.Velocity;
+		set => Rigidbody.Velocity = value;
+	}
 
 	private Rotation cameraStartRotation { get; set; }
 	private float TimeSinceSnap { get; set; }
 	private Vector3 CurrentCameraOffset { get; set; }
-
-	/// <summary>
-	/// Position a player should be looking from in world space.
-	/// </summary>
-	[Browsable( false )]
-	public Vector3 EyePosition
-	{
-		get => Transform.PointToWorld( EyeLocalPosition );
-		set => EyeLocalPosition = Transform.PointToLocal( value );
-	}
-
-	/// <summary>
-	/// Position a player should be looking from in local to the entity coordinates.
-	/// </summary>
-	[Net, Predicted, Browsable( false )]
-	public Vector3 EyeLocalPosition { get; set; }
-
-	/// <summary>
-	/// Rotation of the entity's "eyes", i.e. rotation for the camera when this entity is used as the view entity.
-	/// </summary>
-	[Browsable( false )]
-	public Rotation EyeRotation
-	{
-		get => Transform.RotationToWorld( EyeLocalRotation );
-		set => EyeLocalRotation = Transform.RotationToLocal( value );
-	}
-
-	/// <summary>
-	/// Rotation of the entity's "eyes", i.e. rotation for the camera when this entity is used as the view entity. In local to the entity coordinates.
-	/// </summary>
-	[Net, Predicted, Browsable( false )]
-	public Rotation EyeLocalRotation { get; set; }
 
 	public BBox Hull
 	{
@@ -84,146 +61,78 @@ public partial class Pawn : AnimatedEntity
 
 	private BBox GetDuckingHull()
 	{
-		return new BBox
-		(
-			new Vector3( -16, -16, 0 ),
-			new Vector3( 16, 16, 32 )
-		);
+		return new BBox(new Vector3(-16, -16, 0), new Vector3(16, 16, 32));
 	}
 
 	private BBox GetStandingHull()
 	{
-		return new BBox
-		(
-			new Vector3( -16, -16, 0 ),
-			new Vector3( 16, 16, 64 )
-		);
+		return new BBox(new Vector3(-16, -16, 0), new Vector3(16, 16, 64));
 	}
 
-	[BindComponent] public PawnController Controller { get; }
-	[BindComponent] public PawnAnimator Animator { get; }
+	public PawnController Controller => Components.Get<PawnController>();
 
-	public override Ray AimRay => new Ray( EyePosition, EyeRotation.Forward );
-
-	public AnimatedEntity ShadowModel;
+	public PawnAnimator Animator => Components.Get<PawnAnimator>();
 
 	bool IsThirdPerson { get; set; } = false;
 
 	/// <summary>
-	/// Called when the entity is first created 
+	/// Called when the entity is first created
 	/// </summary>
+	/*
 	public override void Spawn()
 	{
-		SetModel( "models/faith_v2.vmdl" );
+	    SetModel("models/faith_v2.vmdl");
 
-		EnableDrawing = true;
-		EnableHideInFirstPerson = false;
-		EnableShadowInFirstPerson = true;
+	    EnableDrawing = true;
+	    EnableHideInFirstPerson = false;
+	    EnableShadowInFirstPerson = true;
 
-		CameraHelper = new AnimatedEntity();
-		CameraHelper.Position = Position + Model.GetBoneTransform( "CameraJoint" ).Position;
-		CameraHelper.SetParent( this, "CameraJoint" );
+	    CameraHelper = new AnimatedEntity();
+	    CameraHelper.Position = Position + Model.GetBoneTransform("CameraJoint").Position;
+	    CameraHelper.SetParent(this, "CameraJoint");
 
-		PostProcessing = Camera.Main.FindOrCreateHook<CameraPostProcessing>();
+	    PostProcessing = Camera.Main.FindOrCreateHook<CameraPostProcessing>();
 
-		EnableShadowCasting = false;
+	    EnableShadowCasting = false;
 
-		ShadowModel = new( "models/faith_shadow.vmdl" );
-		ShadowModel.SetParent( this, true );
-		ShadowModel.EnableShadowOnly = true;
-		ShadowModel.EnableShadowCasting = true;
+	    ShadowModel = new("models/faith_shadow.vmdl");
+	    ShadowModel.SetParent(this, true);
+	    ShadowModel.EnableShadowOnly = true;
+	    ShadowModel.EnableShadowCasting = true;
 	}
+	*/
 
-	public void UpdatePostProcessing()
+	// public override void Simulate(IClient cl)
+	// {
+	// 	UpdateAnimParameters();
+	// 	SimulateRotation();
+	// 	Controller?.Simulate(cl);
+	// 	Animator?.Simulate();
+
+	// 	UpdatePostProcessing();
+
+	// 	TimeSinceSnap += Time.Delta;
+	// }
+
+	protected override void OnUpdate()
 	{
-		if ( PostProcessing == null )
+		if (IsProxy)
 			return;
 
-		PostProcessing.PawnMaxSpeed = Controller.CurrentMaxSpeed;
-	}
+		BuildInput();
 
-	public void SetActiveWeapon( Weapon weapon )
-	{
-		ActiveWeapon?.OnHolster();
-		ActiveWeapon = weapon;
-		ActiveWeapon.OnEquip( this );
-	}
-
-	public void Respawn()
-	{
-		Components.Create<PawnController>();
-		Components.Create<PawnAnimator>();
-
-		// SetActiveWeapon( new Hands() );
-	}
-
-	public void DressFromClient( IClient cl )
-	{
-	}
-
-	public override void Simulate( IClient cl )
-	{
-		UpdateAnimParameters();
-		SimulateRotation();
-		Controller?.Simulate( cl );
-		Animator?.Simulate();
-		ActiveWeapon?.Simulate( cl );
-		EyeLocalPosition = Vector3.Up * (64f * Scale);
-
-		UpdatePostProcessing();
-
-		TimeSinceSnap += Time.Delta;
-	}
-
-	void UpdateAnimParameters()
-	{
-		SetAnimParameter( "speed", Velocity.Length );
-		SetAnimParameter( "horizontal_speed", Velocity.WithZ(0).Length );
-		SetAnimParameter( "airborne", !Controller.Grounded );
-		SetAnimParameter( "jumping", Controller.Jumping );
-		SetAnimParameter( "dashing", Controller.Dashing );
-		SetAnimParameter( "wallrunning", (int)Controller.Wallrunning );
-		SetAnimParameter( "vaulting", (int)Controller.Vaulting );
-		SetAnimParameter( "climbing", Controller.Climbing );
-		SetAnimParameter( "ducking", Controller.Ducking );
-		SetAnimParameter( "sliding", Controller.Sliding );
-	}
-
-	public override void BuildInput()
-	{
-		InputDirection = Input.AnalogMove;
-
-		if ( Input.StopProcessing )
-			return;
-
-		var look = Input.AnalogLook;
-
-		if ( ViewAngles.pitch > 90f || ViewAngles.pitch < -90f )
-		{
-			look = look.WithYaw( look.yaw * -1f );
-		}
-
-		var viewAngles = ViewAngles;
-		viewAngles += look;
-		viewAngles.pitch = viewAngles.pitch.Clamp( -89f, 89f );
-		viewAngles.roll = 0f;
-		ViewAngles = viewAngles.Normal;
-	}
-
-	public override void FrameSimulate( IClient cl )
-	{
 		SimulateRotation();
 
 		CameraUpdateRotation();
 		CameraUpdateFOV();
 		CameraUpdateTilt();
 
-		if ( Input.Pressed( "view" ) )
+		if (Input.Pressed("view"))
 		{
 			ToggleThirdPerson();
 		}
 
-		if ( IsThirdPerson )
+		if (IsThirdPerson)
 		{
 			UpdateCameraThirdPerson();
 		}
@@ -231,6 +140,48 @@ public partial class Pawn : AnimatedEntity
 		{
 			UpdateCameraFirstPerson();
 		}
+
+		UpdateAnimParameters();
+		// SimulateRotation();
+		Controller?.Simulate();
+		// Animator?.Simulate();
+
+		TimeSinceSnap += Time.Delta;
+	}
+
+	void UpdateAnimParameters()
+	{
+		Renderer.Set("speed", Velocity.Length);
+		Renderer.Set("horizontal_speed", Velocity.WithZ(0).Length);
+		Renderer.Set("airborne", !Controller.Grounded);
+		Renderer.Set("jumping", Controller.Jumping);
+		Renderer.Set("dashing", Controller.Dashing);
+		Renderer.Set("wallrunning", (int)Controller.Wallrunning);
+		Renderer.Set("vaulting", (int)Controller.Vaulting);
+		Renderer.Set("climbing", Controller.Climbing);
+		Renderer.Set("ducking", Controller.Ducking);
+		Renderer.Set("sliding", Controller.Sliding);
+	}
+
+	void BuildInput()
+	{
+		InputDirection = Input.AnalogMove;
+
+		if (Input.Suppressed)
+			return;
+
+		var look = Input.AnalogLook;
+
+		if (ViewAngles.pitch > 90f || ViewAngles.pitch < -90f)
+		{
+			look = look.WithYaw(look.yaw * -1f);
+		}
+
+		var viewAngles = ViewAngles;
+		viewAngles += look;
+		viewAngles.pitch = viewAngles.pitch.Clamp(-89f, 89f);
+		viewAngles.roll = 0f;
+		ViewAngles = viewAngles.Normal;
 	}
 
 	private void ToggleThirdPerson()
@@ -241,56 +192,64 @@ public partial class Pawn : AnimatedEntity
 	private void UpdateCameraThirdPerson()
 	{
 		Vector3 targetPos;
-		var pos = Position + Vector3.Up * 64;
-		var rot = Camera.Rotation * Rotation.FromAxis( Vector3.Up, -16 );
+		var pos = WorldPosition + Vector3.Up * 64;
+		var rot = Camera.WorldRotation * Rotation.FromAxis(Vector3.Up, -16);
 
-		float distance = 80.0f * Scale;
-		targetPos = pos + rot.Right * ((CollisionBounds.Mins.x + 50) * Scale);
+		float distance = 80.0f * WorldScale.z;
+		targetPos =
+			pos + rot.Right * ((Rigidbody.PhysicsBody.GetBounds().Mins.x + 50) * WorldScale);
 		targetPos += rot.Forward * -distance;
 
-		var tr = Trace.Ray( pos, targetPos )
-			.WithAnyTags( "solid" )
-			.Ignore( this )
-			.Radius( 8 )
+		var tr = Scene
+			.Trace.Ray(pos, targetPos)
+			.WithAnyTags("solid")
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Radius(8)
 			.Run();
 
-		Camera.FirstPersonViewer = null;
-		Camera.Position = tr.EndPosition;
+		Camera.WorldPosition = tr.EndPosition;
 	}
 
 	private void UpdateCameraFirstPerson()
 	{
-		bool turningLeft = ViewAngles.yaw.NormalizeDegrees() > PreviousViewAngles.yaw.NormalizeDegrees();
-		float turnRate = PreviousViewAngles.ToRotation().Distance( ViewAngles.ToRotation() );
+		bool turningLeft =
+			ViewAngles.yaw.NormalizeDegrees() > PreviousViewAngles.yaw.NormalizeDegrees();
+		float turnRate = PreviousViewAngles.ToRotation().Distance(ViewAngles.ToRotation());
 
-		if ( turnRate > CameraTiltDeadzone )
-			CameraTilt = CameraTilt.LerpTo( turningLeft ? -CameraTiltMax : CameraTiltMax, Time.Delta * CameraTiltMultiplier );
+		if (turnRate > CameraTiltDeadzone)
+			CameraTilt = CameraTilt.LerpTo(
+				turningLeft ? -CameraTiltMax : CameraTiltMax,
+				Time.Delta * CameraTiltMultiplier
+			);
 
-		PreviousViewAngles = PreviousViewAngles.LerpTo( ViewAngles, Time.Delta * 50f );
+		PreviousViewAngles = PreviousViewAngles.LerpTo(ViewAngles, Time.Delta * 50f);
 
-		Camera.Rotation = Rotation.From( ViewAngles.pitch, ViewAngles.yaw, ViewAngles.roll + CameraTilt );
-		Camera.FirstPersonViewer = this;
+		Camera.WorldRotation = Rotation.From(
+			ViewAngles.pitch,
+			ViewAngles.yaw,
+			ViewAngles.roll + CameraTilt
+		);
 
 		UpdateCameraOffset();
-		Camera.Position = Position + CurrentCameraOffset;
+		Camera.WorldPosition = WorldPosition + CurrentCameraOffset;
 
-		if ( TimeSinceSnap < 0.5f )
+		if (TimeSinceSnap < 0.5f)
 		{
-			CameraRotateToNewPosition( 15f );
+			CameraRotateToNewPosition(15f);
 		}
 		else
 		{
-			if ( Controller.Climbing )
+			if (Controller.Climbing)
 			{
 				LookTowardsWall();
 			}
 
-			if ( Controller.IsWallRunning() )
+			if (Controller.IsWallRunning())
 			{
 				LookTowardsWallrunMovement();
 			}
 
-			if ( Controller.Vaulting == VaultType.OntoHigh )
+			if (Controller.Vaulting == VaultType.OntoHigh)
 			{
 				LookTowardsVaultTarget();
 			}
@@ -303,16 +262,19 @@ public partial class Pawn : AnimatedEntity
 	{
 		var lerpSpeed = GetCameraOffsetLerpSpeed();
 
-		var cameraHelperLocalPosition = CameraHelper.Position - Position;
-		CurrentCameraOffset = CurrentCameraOffset.LerpTo( cameraHelperLocalPosition, lerpSpeed * Time.Delta );
+		var cameraHelperLocalPosition = CameraHelper.WorldPosition - WorldPosition;
+		CurrentCameraOffset = CurrentCameraOffset.LerpTo(
+			cameraHelperLocalPosition,
+			lerpSpeed * Time.Delta
+		);
 	}
 
 	private float GetCameraOffsetLerpSpeed()
 	{
-		if ( Controller.IsWallRunning() )
+		if (Controller.IsWallRunning())
 			return 30f;
 
-		if ( Controller.TimeSinceSlideStopped < 0.5f )
+		if (Controller.TimeSinceSlideStopped < 0.5f)
 			return 30f;
 
 		return 10f;
@@ -320,22 +282,22 @@ public partial class Pawn : AnimatedEntity
 
 	private void LookTowardsSnap()
 	{
-		if ( Controller.IsWallRunning() )
+		if (Controller.IsWallRunning())
 		{
 			CameraNewAngles = Controller.CurrentWall.Normal.EulerAngles;
 		}
 		else
 		{
-			CameraNewAngles = (ViewAngles.Forward * -1f).EulerAngles.WithPitch( 0 );
+			CameraNewAngles = (ViewAngles.Forward * -1f).EulerAngles.WithPitch(0);
 		}
 	}
 
 	private void CheckForSnap()
 	{
-		if ( TimeSinceSnap < 0.5f )
+		if (TimeSinceSnap < 0.5f)
 			return;
 
-		if ( Input.Pressed("Snap Turn 180 degrees") )
+		if (Input.Pressed("Snap Turn 180 degrees"))
 		{
 			LookTowardsSnap();
 			TimeSinceSnap = 0f;
@@ -345,29 +307,31 @@ public partial class Pawn : AnimatedEntity
 	private void LookTowardsWall()
 	{
 		CameraNewAngles = (Controller.CurrentWall.Normal * -1f).EulerAngles.WithPitch(-40f);
-		CameraRotateToNewPosition( speed: 5f );
+		CameraRotateToNewPosition(speed: 5f);
 	}
 
 	private void LookTowardsVaultTarget()
 	{
-		CameraNewAngles = (Controller.VaultTargetPos - Controller.Entity.Position).EulerAngles.WithPitch(0);
-		CameraRotateToNewPosition( speed: 5f );
+		CameraNewAngles = (
+			Controller.VaultTargetPos - Controller.GameObject.WorldPosition
+		).EulerAngles.WithPitch(0);
+		CameraRotateToNewPosition(speed: 5f);
 	}
 
 	private void LookTowardsWallrunMovement()
 	{
-		if ( !Controller.CurrentWall.Hit )
+		if (!Controller.CurrentWall.Hit)
 			return;
 
-		if ( Controller.TimeSinceWallrun > 0.25f )
+		if (Controller.TimeSinceWallrun > 0.25f)
 			return;
 
-		if ( Controller.TimeSinceWallrun < 0.05f )
+		if (Controller.TimeSinceWallrun < 0.05f)
 			return;
 
 		var wallNormalRotation = Controller.CurrentWall.Normal.EulerAngles.ToRotation();
 
-		switch ( Controller.Wallrunning )
+		switch (Controller.Wallrunning)
 		{
 			case WallRunSide.Left:
 				CameraNewAngles = wallNormalRotation.Left.EulerAngles;
@@ -379,24 +343,30 @@ public partial class Pawn : AnimatedEntity
 				return;
 		}
 
-		CameraRotateToNewPosition( speed: 15f );
+		CameraRotateToNewPosition(speed: 15f);
 	}
 
 	private void CameraUpdateTilt()
 	{
-		if ( Controller.Wallrunning != 0 )
+		if (Controller.Wallrunning != 0)
 		{
-			CameraTilt = CameraTilt.LerpTo( Controller.Wallrunning == WallRunSide.Left ? 10f : -10f, Time.Delta * CameraTiltMultiplier );
+			CameraTilt = CameraTilt.LerpTo(
+				Controller.Wallrunning == WallRunSide.Left ? 10f : -10f,
+				Time.Delta * CameraTiltMultiplier
+			);
 			return;
 		}
 
-		if ( Controller.TimeSinceDash < 0.1f )
+		if (Controller.TimeSinceDash < 0.1f)
 		{
-			CameraTilt = CameraTilt.LerpTo( Controller.Dashing == 1 ? -10f : 10f, Time.Delta * CameraTiltMultiplier );
+			CameraTilt = CameraTilt.LerpTo(
+				Controller.Dashing == 1 ? -10f : 10f,
+				Time.Delta * CameraTiltMultiplier
+			);
 			return;
 		}
 
-		CameraTilt = CameraTilt.LerpTo( 0, Time.Delta * CameraTiltMultiplier * 1.1f );
+		CameraTilt = CameraTilt.LerpTo(0, Time.Delta * CameraTiltMultiplier * 1.1f);
 	}
 
 	private void CameraUpdateRotation()
@@ -406,51 +376,51 @@ public partial class Pawn : AnimatedEntity
 
 	private void CameraRotateToViewAngles()
 	{
-		Camera.Rotation = ViewAngles.ToRotation();
+		Camera.WorldRotation = ViewAngles.ToRotation();
 	}
 
 	private void CameraRotateToNewPosition(float speed = 5f)
 	{
-		ViewAngles = ViewAngles.LerpTo( CameraNewAngles, speed * Time.Delta );
+		ViewAngles = ViewAngles.LerpTo(CameraNewAngles, speed * Time.Delta);
 	}
 
 	private void CameraUpdateFOV()
 	{
-		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( Game.Preferences.FieldOfView );
+		Camera.FieldOfView = Screen.CreateVerticalFieldOfView(Preferences.FieldOfView);
 	}
 
-	public TraceResult TraceBBox( Vector3 start, Vector3 end, float liftFeet = 0.0f )
+	public SceneTraceResult TraceBBox(Vector3 start, Vector3 end, float liftFeet = 0.0f)
 	{
-		return TraceBBox( start, end, Hull.Mins, Hull.Maxs, liftFeet );
+		return TraceBBox(start, end, Hull.Mins, Hull.Maxs, liftFeet);
 	}
 
-	public TraceResult TraceBBox( Vector3 start, Vector3 end, Vector3 mins, Vector3 maxs, float liftFeet = 0.0f )
+	public SceneTraceResult TraceBBox(
+		Vector3 start,
+		Vector3 end,
+		Vector3 mins,
+		Vector3 maxs,
+		float liftFeet = 0.0f
+	)
 	{
-		if ( liftFeet > 0 )
+		if (liftFeet > 0)
 		{
 			start += Vector3.Up * liftFeet;
-			maxs = maxs.WithZ( maxs.z - liftFeet );
+			maxs = maxs.WithZ(maxs.z - liftFeet);
 		}
 
-		var tr = Trace.Ray( start, end )
-					.Size( mins, maxs )
-					.WithAnyTags( "solid", "playerclip", "passbullets" )
-					.Ignore( this )
-					.Run();
+		var tr = Scene
+			.Trace.Ray(start, end)
+			.Size(mins, maxs)
+			.WithAnyTags("solid", "playerclip", "passbullets")
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Run();
 
 		return tr;
 	}
 
 	protected void SimulateRotation()
 	{
-		EyeRotation = ViewAngles.ToRotation();
-		Rotation = ViewAngles.WithPitch( 0f ).ToRotation();
-	}
-
-	protected override void OnDestroy()
-	{
-		base.OnDestroy();
-
-		ShadowModel?.Delete();
+		// EyeRotation = ViewAngles.ToRotation();
+		WorldRotation = ViewAngles.WithPitch(0f).ToRotation();
 	}
 }

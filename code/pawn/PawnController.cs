@@ -1,12 +1,14 @@
-﻿using Sandbox;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Sandbox;
 
 namespace RunnerVision;
 
-public partial class PawnController : EntityComponent<Pawn>
+public partial class PawnController : Component
 {
-	[Net]
+	[Property]
+	public Pawn Pawn => Components.Get<Pawn>();
+
 	public bool Noclipping { get; set; }
 
 	public int StepSize => 26;
@@ -32,7 +34,7 @@ public partial class PawnController : EntityComponent<Pawn>
 	public float TimeSinceClimbing { get; set; }
 	public float TimeSinceWallrun { get; set; }
 	public float TimeSinceSlideStopped { get; set; }
-	public TraceResult CurrentWall { get; set; } = new TraceResult();
+	public SceneTraceResult CurrentWall { get; set; } = new SceneTraceResult();
 	public bool Jumping { get; set; }
 	public Vector3 VaultTargetPos { get; set; }
 	public bool Ducking { get; set; }
@@ -52,37 +54,40 @@ public partial class PawnController : EntityComponent<Pawn>
 	private Vector3 previousWallrunNormal = Vector3.Zero;
 	private bool parkouredBeforeLanding = false;
 
-	HashSet<string> ControllerEvents = new( StringComparer.OrdinalIgnoreCase );
+	HashSet<string> ControllerEvents = new(StringComparer.OrdinalIgnoreCase);
 
-	public bool Grounded => Entity.GroundEntity.IsValid();
+	public bool Grounded => Pawn.GroundEntity.IsValid();
 
 	public PawnController()
 	{
 		CurrentMaxSpeed = StartingSpeed;
 	}
 
-	public void Simulate( IClient cl )
+	public void Simulate()
 	{
 		ControllerEvents.Clear();
 
-		DebugOverlay.ScreenText( "Climbing: " + IsClimbing().ToString(), line: 5 );
-		DebugOverlay.ScreenText( "Wallrunning: " + Wallrunning.ToString(), line: 6 );
-		DebugOverlay.ScreenText( "Vaulting: " + Vaulting.ToString(), line: 7 );
-		DebugOverlay.ScreenText( "Grounded: " + Grounded.ToString(), line: 8 );
-		DebugOverlay.ScreenText( "Ducking: " + Ducking.ToString(), line: 9 );
-		DebugOverlay.ScreenText( "Sliding: " + Sliding.ToString(), line: 10 );
-		DebugOverlay.ScreenText( "Current Speed: " + ((int)Entity.Velocity.Length).ToString(), line: 11 );
-		DebugOverlay.ScreenText( "Current Accel: " + CurrentMaxSpeed.ToString(), line: 12 );
-		DebugOverlay.ScreenText( "Max Accel: " + MaxSpeed.ToString(), line: 13 );
+		// DebugOverlay.ScreenText("Climbing: " + IsClimbing().ToString(), line: 5);
+		// DebugOverlay.ScreenText("Wallrunning: " + Wallrunning.ToString(), line: 6);
+		// DebugOverlay.ScreenText("Vaulting: " + Vaulting.ToString(), line: 7);
+		// DebugOverlay.ScreenText("Grounded: " + Grounded.ToString(), line: 8);
+		// DebugOverlay.ScreenText("Ducking: " + Ducking.ToString(), line: 9);
+		// DebugOverlay.ScreenText("Sliding: " + Sliding.ToString(), line: 10);
+		// DebugOverlay.ScreenText(
+		// 	"Current Speed: " + ((int)Entity.Velocity.Length).ToString(),
+		// 	line: 11
+		// );
+		// DebugOverlay.ScreenText("Current Accel: " + CurrentMaxSpeed.ToString(), line: 12);
+		// DebugOverlay.ScreenText("Max Accel: " + MaxSpeed.ToString(), line: 13);
 
-		if ( Noclipping )
+		if (Noclipping)
 		{
 			// TODO: don't return here
 			HandleNoclipping();
 			return;
 		}
 
-		if ( IsVaulting() )
+		if (IsVaulting())
 		{
 			// TODO: don't return here
 			ProgressVault();
@@ -94,70 +99,69 @@ public partial class PawnController : EntityComponent<Pawn>
 		var groundEntity = CheckForGround();
 		var moveVector = GetMoveVector();
 
-		UpdateMaxSpeed( moveVector );
-		AdjustSharpTurn( moveVector );
+		UpdateMaxSpeed(moveVector);
+		AdjustSharpTurn(moveVector);
 
-		if ( groundEntity.IsValid() )
+		if (groundEntity.IsValid())
 		{
-			if ( !Grounded )
+			if (!Grounded)
 			{
 				InitiateLandingOnFloor();
 			}
 		}
 
-		UpdateMoveHelper( groundEntity );
+		UpdateMoveHelper(groundEntity);
 
 		if (Grounded)
 		{
-			DoMovement( moveVector );
+			DoMovement(moveVector);
 		}
 		else
 		{
 			DoFall();
 		}
 
-		if ( Input.Released( "jump" ) )
+		if (Input.Released("jump"))
 		{
 			DisableParkourLock();
 		}
 
-		if ( Input.Pressed( "jump" ) )
+		if (Input.Pressed("jump"))
 		{
-			if ( ShouldDash() )
+			if (ShouldDash())
 			{
 				InitiateDash();
 			}
 		}
 
-
-		if ( Input.Pressed( "jump" ))
+		if (Input.Pressed("jump"))
 		{
-			if ( IsWallRunning() )
+			if (IsWallRunning())
 			{
 				InitiateJumpOffWall();
 			}
-			
-			if ( CanJump() )
+
+			if (CanJump())
 			{
 				InitiateJump();
 			}
 		}
 
-		if ( Input.Down( "jump" ) && !parkouredSinceJumping )
+		if (Input.Down("jump") && !parkouredSinceJumping)
 		{
-			bool successfulWallrun = TryWallrunning( );
+			bool successfulWallrun = TryWallrunning();
 
-			if ( !successfulWallrun )
+			if (!successfulWallrun)
 				InitiateVault();
 		}
 
-		if ( Input.Down( "run" ) )
+		if (Input.Down("run"))
 		{
 			TryDucking();
 		}
 		else
 		{
-			if ( IsDucking() && !IsSliding() )
+			if (IsDucking() && !IsSliding())
 				StopDucking();
 		}
 
@@ -167,15 +171,15 @@ public partial class PawnController : EntityComponent<Pawn>
 
 		// TestAndFixStuck( ); // This causes the slope glitch
 
-		if ( UnlimitedSprint )
+		if (UnlimitedSprint)
 			CurrentMaxSpeed = MaxSpeed;
 
 		if (debugMode)
 		{
-			DebugOverlay.ScreenText( CurrentMaxSpeed.ToString() );
-			DebugOverlay.ScreenText( Entity.Position.ToString(), 3 );
+			// DebugOverlay.ScreenText(CurrentMaxSpeed.ToString());
+			// DebugOverlay.ScreenText(Entity.Position.ToString(), 3);
 
-			DebugOverlay.ScreenText( Vaulting.ToString(), 1 );
+			// DebugOverlay.ScreenText(Vaulting.ToString(), 1);
 		}
 
 		UpdateFootsteps();
@@ -184,45 +188,45 @@ public partial class PawnController : EntityComponent<Pawn>
 
 		ClampMaxSpeed();
 
-		ForwardDirection = GetVelocityRotation().Forward.WithZ( 0 );
+		ForwardDirection = GetVelocityRotation().Forward.WithZ(0);
 	}
 
-	[ConCmd.Server( "noclip" )]
-	static void DoPlayerNoclip()
+	// [ConCmd.Server("noclip")]
+	// static void DoPlayerNoclip()
+	// {
+	// 	if (ConsoleSystem.Caller.Pawn is Pawn player)
+	// 	{
+	// 		if (player.Controller.Noclipping)
+	// 			player.Controller.Noclipping = false;
+	// 		else
+	// 		{
+	// 			player.Controller.Noclipping = true;
+	// 		}
+	// 	}
+	// }
+
+	// [ConCmd.Admin("unlimited_sprint")]
+	// static void DoUnlimitedSprint()
+	// {
+	// 	if (ConsoleSystem.Caller.Pawn is Pawn player)
+	// 	{
+	// 		if (player.Controller.UnlimitedSprint)
+	// 			player.Controller.UnlimitedSprint = false;
+	// 		else
+	// 			player.Controller.UnlimitedSprint = true;
+	// 	}
+	// }
+
+	public bool HasEvent(string eventName)
 	{
-		if ( ConsoleSystem.Caller.Pawn is Pawn player )
-		{
-			if (player.Controller.Noclipping)
-				player.Controller.Noclipping = false;
-			else
-			{
-				player.Controller.Noclipping = true;
-			}
-		}
+		return ControllerEvents.Contains(eventName);
 	}
 
-	[ConCmd.Admin( "unlimited_sprint" )]
-	static void DoUnlimitedSprint()
+	void AddEvent(string eventName)
 	{
-		if ( ConsoleSystem.Caller.Pawn is Pawn player )
-		{
-			if ( player.Controller.UnlimitedSprint )
-				player.Controller.UnlimitedSprint = false;
-			else
-				player.Controller.UnlimitedSprint = true;
-		}
-	}
-
-	public bool HasEvent( string eventName )
-	{
-		return ControllerEvents.Contains( eventName );
-	}
-
-	void AddEvent( string eventName )
-	{
-		if ( HasEvent( eventName ) )
+		if (HasEvent(eventName))
 			return;
 
-		ControllerEvents.Add( eventName );
+		ControllerEvents.Add(eventName);
 	}
 }

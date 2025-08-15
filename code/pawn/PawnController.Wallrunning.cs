@@ -1,7 +1,7 @@
-﻿using Sandbox;
-using System;
+﻿using System;
 using System.Diagnostics.Tracing;
 using System.Reflection.Metadata.Ecma335;
+using Sandbox;
 
 namespace RunnerVision;
 
@@ -17,26 +17,26 @@ public partial class PawnController
 	public struct WallRunTrace
 	{
 		public WallRunSide side;
-		public TraceResult traceResult;
+		public SceneTraceResult traceResult;
 
-		public WallRunTrace( WallRunSide side, TraceResult traceResult )
+		public WallRunTrace(WallRunSide side, SceneTraceResult traceResult)
 		{
 			this.side = side;
 			this.traceResult = traceResult;
 		}
 
 		public static WallRunTrace None =>
-			new WallRunTrace( WallRunSide.None, new TraceResult() );
+			new WallRunTrace(WallRunSide.None, new SceneTraceResult());
 	}
 
 	void UpdateWallrunning()
 	{
-		if ( Wallrunning == 0 )
+		if (Wallrunning == 0)
 			return;
 
 		var traceWall = CheckForWall();
 
-		if ( !CanWallrun( traceWall ) )
+		if (!CanWallrun(traceWall))
 		{
 			Wallrunning = 0;
 			wallrunSinceJumping = false;
@@ -51,61 +51,67 @@ public partial class PawnController
 		return Wallrunning != 0;
 	}
 
-	bool CanWallrun( WallRunTrace traceWall )
+	bool CanWallrun(WallRunTrace traceWall)
 	{
-		if ( traceWall.side == WallRunSide.None )
+		if (traceWall.side == WallRunSide.None)
 			return false;
 
-		if ( IsDashing() )
+		if (IsDashing())
 			return false;
 
-		if ( Grounded )
+		if (Grounded)
 			return false;
 
-		if ( Wallrunning == WallRunSide.Left && traceWall.side != WallRunSide.Left )
+		if (Wallrunning == WallRunSide.Left && traceWall.side != WallRunSide.Left)
 			return false;
 
-		if ( Wallrunning == WallRunSide.Right && traceWall.side != WallRunSide.Right )
+		if (Wallrunning == WallRunSide.Right && traceWall.side != WallRunSide.Right)
 			return false;
 
-		if ( !IsWallRunning() && (Entity.Velocity * 0.5f).WithZ( 0 ).Length < 50f )
+		if (!IsWallRunning() && (Pawn.Velocity * 0.5f).WithZ(0).Length < 50f)
 			return false;
 
-		if ( IsWallRunning() && Entity.Velocity.WithZ( 0 ).Length < 50f )
+		if (IsWallRunning() && Pawn.Velocity.WithZ(0).Length < 50f)
 			return false;
 
-		if ( !AngleWithinRange( GetVelocityRotation().Forward, traceWall.traceResult.Normal, maxAngle: 110f ) )
+		if (
+			!AngleWithinRange(
+				GetVelocityRotation().Forward,
+				traceWall.traceResult.Normal,
+				maxAngle: 110f
+			)
+		)
 			return false;
 
 		return true;
 	}
 
-	bool TryWallrunning( )
+	bool TryWallrunning()
 	{
-		if ( wallrunSinceJumping )
+		if (wallrunSinceJumping)
 			return false;
 
 		var traceWall = CheckForWall();
 
-		if ( previousWallrunNormal.AlmostEqual(traceWall.traceResult.Normal, 0.1f) )
+		if (previousWallrunNormal.AlmostEqual(traceWall.traceResult.Normal, 0.1f))
 			return false;
 
-		if ( !CanWallrun( traceWall ) )
+		if (!CanWallrun(traceWall))
 			return false;
 
-		InitiateWallrun( traceWall );
+		InitiateWallrun(traceWall);
 		return true;
 	}
 
-	void InitiateWallrun( WallRunTrace traceWall )
+	void InitiateWallrun(WallRunTrace traceWall)
 	{
-		if ( !IsWallRunning() && !Grounded )
+		if (!IsWallRunning() && !Grounded)
 		{
-			var velocityZ = Math.Max( 100f, Entity.Velocity.z );
+			var velocityZ = Math.Max(100f, Pawn.Velocity.z);
 
-			Entity.Velocity *= 0.5f;
-			Entity.ApplyAbsoluteImpulse( ForwardDirection * 100f );
-			Entity.Velocity = Entity.Velocity.WithZ( velocityZ );
+			Pawn.Velocity *= 0.5f;
+			Pawn.Rigidbody.ApplyImpulse(ForwardDirection * 100f);
+			Pawn.Velocity = Pawn.Velocity.WithZ(velocityZ);
 		}
 
 		Wallrunning = traceWall.side;
@@ -117,34 +123,42 @@ public partial class PawnController
 		TimeSinceWallrun = 0f;
 	}
 
-	WallRunTrace CheckForWall( bool behind = false )
+	WallRunTrace CheckForWall(bool behind = false)
 	{
 		var velocityRotation = GetVelocityRotation();
 
-		var from = Entity.Position + Vector3.Up * 50f;
-		var toLeft = Entity.Position + Vector3.Up * 50f + velocityRotation.Left * 30f + velocityRotation.Forward * (behind ? -15f : 15f);
-		var toRight = Entity.Position + Vector3.Up * 50f + velocityRotation.Right * 30f + velocityRotation.Forward * (behind ? -15f : 15f);
+		var from = Pawn.WorldPosition + Vector3.Up * 50f;
+		var toLeft =
+			Pawn.WorldPosition
+			+ Vector3.Up * 50f
+			+ velocityRotation.Left * 30f
+			+ velocityRotation.Forward * (behind ? -15f : 15f);
+		var toRight =
+			Pawn.WorldPosition
+			+ Vector3.Up * 50f
+			+ velocityRotation.Right * 30f
+			+ velocityRotation.Forward * (behind ? -15f : 15f);
 
-		if ( debugMode )
+		if (debugMode)
 		{
-			DebugOverlay.Line( start: from, end: toLeft, duration: 1f );
-			DebugOverlay.Line( start: from, end: toRight, duration: 1f );
+			DebugOverlay.Line(from: from, to: toLeft, duration: 1f);
+			DebugOverlay.Line(from: from, to: toRight, duration: 1f);
 		}
 
-		var traceLeft = Trace.Ray( from, toLeft ).Run();
-		var traceRight = Trace.Ray( from, toRight ).Run();
+		var traceLeft = Scene.Trace.Ray(from, toLeft).Run();
+		var traceRight = Scene.Trace.Ray(from, toRight).Run();
 
-		if ( traceLeft.Hit )
-			return new WallRunTrace( WallRunSide.Left, traceLeft );
+		if (traceLeft.Hit)
+			return new WallRunTrace(WallRunSide.Left, traceLeft);
 
-		if ( traceRight.Hit )
-			return new WallRunTrace( WallRunSide.Right, traceRight );
+		if (traceRight.Hit)
+			return new WallRunTrace(WallRunSide.Right, traceRight);
 
 		return WallRunTrace.None;
 	}
 
 	public bool IsFalling()
 	{
-		return Entity.Velocity.z < 0f;
+		return Pawn.Velocity.z < 0f;
 	}
 }
