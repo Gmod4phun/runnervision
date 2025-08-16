@@ -62,7 +62,10 @@ public partial class PawnController
 
 	public void InitiateSlide()
 	{
-		Pawn.Rigidbody.ApplyImpulse(Pawn.WorldRotation.Forward * 100f);
+		// Pawn.Rigidbody.ApplyImpulse(Pawn.WorldRotation.Forward * 100f);
+
+		Pawn.Velocity += Pawn.WorldRotation.Forward * 100f;
+
 		PlaySlideSounds();
 
 		Sliding = true;

@@ -142,9 +142,14 @@ public partial class PawnController
 		if (TimeSinceClimbing > 0.15f)
 		{
 			var addHorizontalSpeed = Math.Min(50f, Pawn.Velocity.WithZ(0).Length);
-			Pawn.Rigidbody.ApplyImpulse(
-				Pawn.WorldRotation.Up * 100f + Pawn.WorldRotation.Up * addHorizontalSpeed
-			);
+			// Pawn.Rigidbody.ApplyImpulse(
+			// 	Pawn.WorldRotation.Up * 100f + Pawn.WorldRotation.Up * addHorizontalSpeed
+			// );
+
+			Pawn.Velocity +=
+				Pawn.WorldRotation.Up * 100f + Pawn.WorldRotation.Up * addHorizontalSpeed;
+			Pawn.Velocity *= 0.85f;
+
 			TimeSinceClimbing = 0f;
 			CurrentClimbAmount++;
 		}

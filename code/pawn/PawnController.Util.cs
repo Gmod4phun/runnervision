@@ -48,9 +48,11 @@ public partial class PawnController
 
 		var jumpVector = cameraDirection * 300f * forwardMultiplier + Pawn.WorldRotation.Up * 300f;
 
-		Pawn.Velocity *= 0.5f;
+		// Pawn.Velocity *= 0.5f;
+		// Pawn.Rigidbody.ApplyImpulse(jumpVector);
 
-		Pawn.Rigidbody.ApplyImpulse(jumpVector);
+		Pawn.Velocity = Pawn.Velocity * 0.5f;
+		Pawn.Velocity += jumpVector;
 
 		previousWallrunNormal = CurrentWall.Normal;
 		Wallrunning = 0;
@@ -85,9 +87,14 @@ public partial class PawnController
 
 			Dashing = isLeft ? 1 : 2;
 
-			Pawn.Rigidbody.ApplyImpulse(
-				(isLeft ? Pawn.WorldRotation.Left : Pawn.WorldRotation.Right) * 300f
-			);
+			var impulse = (isLeft ? Pawn.WorldRotation.Left : Pawn.WorldRotation.Right) * 300f;
+
+			// Pawn.Rigidbody.ApplyImpulse(
+			// 	(isLeft ? Pawn.WorldRotation.Left : Pawn.WorldRotation.Right) * 300f
+			// );
+
+			Pawn.Velocity += impulse;
+
 			CurrentMaxSpeed += 200f;
 
 			TimeSinceDash = 0.0f;
