@@ -71,8 +71,6 @@ public partial class Pawn : Component
 
 	public PawnController Controller => Components.Get<PawnController>();
 
-	public PawnAnimator Animator => Components.Get<PawnAnimator>();
-
 	bool IsThirdPerson { get; set; } = false;
 
 	/// <summary>
