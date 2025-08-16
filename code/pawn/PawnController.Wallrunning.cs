@@ -145,8 +145,8 @@ public partial class PawnController
 			DebugOverlay.Line(from: from, to: toRight, duration: 1f);
 		}
 
-		var traceLeft = Scene.Trace.Ray(from, toLeft).Run();
-		var traceRight = Scene.Trace.Ray(from, toRight).Run();
+		var traceLeft = Scene.Trace.Ray(from, toLeft).IgnoreGameObjectHierarchy(GameObject).Run();
+		var traceRight = Scene.Trace.Ray(from, toRight).IgnoreGameObjectHierarchy(GameObject).Run();
 
 		if (traceLeft.Hit)
 			return new WallRunTrace(WallRunSide.Left, traceLeft);

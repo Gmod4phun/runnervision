@@ -94,7 +94,10 @@ public partial class PawnController
 
 		BBox boxFront = GetBoxFront(rayDistance);
 
-		var traceFront = Scene.Trace.Box(bbox: boxFront, from: 0, to: 0).Run();
+		var traceFront = Scene
+			.Trace.Box(bbox: boxFront, from: 0, to: 0)
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Run();
 
 		if (debugMode)
 			DebugOverlay.Box(box: boxFront, color: Color.Red, duration: showDebugTime);
@@ -139,7 +142,10 @@ public partial class PawnController
 		if (Grounded)
 			return false;
 
-		var traceBoxAboveWall = Scene.Trace.Box(bbox: boxAboveWall, from: 0, to: 0).Run();
+		var traceBoxAboveWall = Scene
+			.Trace.Box(bbox: boxAboveWall, from: 0, to: 0)
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Run();
 
 		if (debugMode)
 			DebugOverlay.Box(box: boxAboveWall, Color.Magenta, duration: showDebugTime);
@@ -189,7 +195,10 @@ public partial class PawnController
 		if (debugMode)
 			DebugOverlay.Box(box: boxBehindObstacle, color: Color.Blue, duration: showDebugTime);
 
-		var traceBehindObstacle = Scene.Trace.Box(bbox: boxBehindObstacle, from: 0, to: 0).Run();
+		var traceBehindObstacle = Scene
+			.Trace.Box(bbox: boxBehindObstacle, from: 0, to: 0)
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Run();
 
 		// Make sure we are not vaulting inside map geometry
 		var traceWallFailsafe = GetTraceWallFailSafe(distanceBehindObstacle);
@@ -245,6 +254,7 @@ public partial class PawnController
 					+ Pawn.WorldRotation.Up * 60f
 					+ Pawn.WorldRotation.Forward * distanceBehindObstacle
 			)
+			.IgnoreGameObjectHierarchy(GameObject)
 			.Run();
 	}
 
@@ -299,7 +309,10 @@ public partial class PawnController
 			maxs: Vector3.Forward * -boxRadius + Vector3.Up * 80f + Vector3.Right * boxRadius
 		).Translate(Pawn.WorldPosition + Pawn.WorldRotation.Forward * rayDistance);
 
-		var traceBoxSmallAboveObstacle = Scene.Trace.Box(bbox: topBoxSmall, from: 0, to: 0).Run();
+		var traceBoxSmallAboveObstacle = Scene
+			.Trace.Box(bbox: topBoxSmall, from: 0, to: 0)
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Run();
 
 		if (debugMode)
 			DebugOverlay.Box(box: topBoxSmall, color: Color.Green, duration: showDebugTime);
@@ -315,6 +328,7 @@ public partial class PawnController
 				from: boxBehindObstacle.Center + Pawn.WorldRotation.Up * 30f,
 				to: boxBehindObstacle.Center + Pawn.WorldRotation.Up * -50f
 			)
+			.IgnoreGameObjectHierarchy(GameObject)
 			.Run();
 
 		if (debugMode)
@@ -355,7 +369,10 @@ public partial class PawnController
 		if (GetSpeed().AlmostEqual(0f))
 			return false;
 
-		var traceBoxLargeAboveObstacle = Scene.Trace.Box(bbox: topBoxLarge, from: 0, to: 0).Run();
+		var traceBoxLargeAboveObstacle = Scene
+			.Trace.Box(bbox: topBoxLarge, from: 0, to: 0)
+			.IgnoreGameObjectHierarchy(GameObject)
+			.Run();
 
 		if (debugMode)
 			DebugOverlay.Box(box: topBoxLarge, color: Color.Green, duration: showDebugTime);
@@ -376,6 +393,7 @@ public partial class PawnController
 				from: bbox.Center + Pawn.WorldRotation.Up * offsetTop,
 				to: bbox.Center + Pawn.WorldRotation.Up * offsetBottom
 			)
+			.IgnoreGameObjectHierarchy(GameObject)
 			.Run();
 
 		if (debugMode)

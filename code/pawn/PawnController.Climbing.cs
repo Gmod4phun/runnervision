@@ -26,6 +26,7 @@ public partial class PawnController
 					+ Pawn.WorldRotation.Up * 50f
 					+ Pawn.WorldRotation.Forward * 35f
 			)
+			.IgnoreGameObjectHierarchy(GameObject)
 			.Run();
 
 		if (debugMode)
@@ -73,6 +74,7 @@ public partial class PawnController
 
 		SceneTraceResult traceBoxInfrontOfWall = Scene
 			.Trace.Box(bbox: boxInfrontOfWall, from: 0, to: 0)
+			.IgnoreGameObjectHierarchy(GameObject)
 			.Run();
 
 		if (traceBoxInfrontOfWall.Hit)
