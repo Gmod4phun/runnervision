@@ -9,7 +9,7 @@ namespace RunnerVision;
 
 public partial class PawnController
 {
-	// private Sound slideSoundLoop; // TODO: Implement sliding sound
+	private SoundHandle slideSoundLoop;
 
 	public void TryDucking()
 	{
@@ -80,15 +80,15 @@ public partial class PawnController
 			TrySliding();
 		}
 
-		// if ( slideSoundLoop.IsPlaying && !IsSliding() )
-		// {
-		// 	slideSoundLoop.SetVolume( 1.0f - TimeSinceSlideStopped * 2 );
+		if (slideSoundLoop.IsValid() && slideSoundLoop.IsPlaying && !IsSliding())
+		{
+			slideSoundLoop.Volume = 1.0f - TimeSinceSlideStopped * 2;
 
-		// 	if ( TimeSinceSlideStopped > 0.5f )
-		// 	{
-		// 		slideSoundLoop.Stop();
-		// 	}
-		// }
+			if (TimeSinceSlideStopped > 0.5f)
+			{
+				slideSoundLoop.Stop();
+			}
+		}
 	}
 
 	public bool IsSliding()
@@ -116,7 +116,9 @@ public partial class PawnController
 
 	public void PlaySlideLoop()
 	{
-		// slideSoundLoop.Stop();
-		// slideSoundLoop = Entity.PlaySound( "concretefootstepslideloop" );
+		slideSoundLoop?.Stop();
+		slideSoundLoop = Sound.Play("concretefootstepslideloop");
+		slideSoundLoop.Parent = Pawn.GameObject;
+		slideSoundLoop.FollowParent = true;
 	}
 }
