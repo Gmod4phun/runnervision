@@ -113,7 +113,7 @@
         "__guid": "396b6740-71f9-4648-987d-d5854f28ac12",
         "__enabled": true,
         "AngularDamping": 0,
-        "Gravity": true,
+        "Gravity": false,
         "LinearDamping": 0,
         "Locking": {
           "X": false,
@@ -269,7 +269,7 @@
             "__version": 1,
             "Flags": 0,
             "Name": "CameraHelper",
-            "Position": "0,0,0",
+            "Position": "0,-4,4",
             "Rotation": "0,-0.7071068,0,0.7071068",
             "Scale": "1,1,1",
             "Tags": "",

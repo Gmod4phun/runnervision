@@ -196,8 +196,7 @@ public partial class Pawn : Component
 		var rot = Camera.WorldRotation * Rotation.FromAxis(Vector3.Up, -16);
 
 		float distance = 80.0f * WorldScale.z;
-		targetPos =
-			pos + rot.Right * ((Rigidbody.PhysicsBody.GetBounds().Mins.x + 50) * WorldScale);
+		targetPos = pos + rot.Right * ((32 + 50) * WorldScale);
 		targetPos += rot.Forward * -distance;
 
 		var tr = Scene
