@@ -191,7 +191,7 @@ public partial class PawnController : Component
 				InitiateVault();
 		}
 
-		if (Input.Down("run"))
+		if (Input.Down("duck"))
 		{
 			TryDucking();
 		}
@@ -208,6 +208,16 @@ public partial class PawnController : Component
 
 			Pawn.LookTowardsSnap();
 			TimeSinceSnap = 0f;
+		}
+
+		if (Input.Down("walk"))
+		{
+			CurrentMaxSpeed = 400;
+		}
+
+		if (Input.Released("walk"))
+		{
+			CurrentMaxSpeed = 1000;
 		}
 
 		UpdateDash();
