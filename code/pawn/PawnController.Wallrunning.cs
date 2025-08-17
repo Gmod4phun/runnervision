@@ -113,7 +113,7 @@ public partial class PawnController
 			// Pawn.Rigidbody.ApplyImpulse(ForwardDirection * 100f);
 			// Pawn.Velocity = Pawn.Velocity.WithZ(velocityZ);
 
-			Pawn.Velocity = (Pawn.Velocity * 0.5f + ForwardDirection * 100f).WithZ(velocityZ);
+			Pawn.Velocity = (Pawn.Velocity * 0.8f + ForwardDirection * 100f).WithZ(velocityZ);
 		}
 
 		Wallrunning = traceWall.side;
