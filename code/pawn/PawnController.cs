@@ -33,7 +33,6 @@ public partial class PawnController : Component
 
 	[Property]
 	public int Dashing { get; set; }
-	public bool UnlimitedSprint { get; set; }
 
 	[Property]
 	public VaultType Vaulting { get; set; }
@@ -209,11 +208,6 @@ public partial class PawnController : Component
 		UpdateDuck();
 		UpdateSlide();
 
-		// TestAndFixStuck( ); // This causes the slope glitch
-
-		if (UnlimitedSprint)
-			CurrentMaxSpeed = MaxSpeed;
-
 		if (debugMode)
 		{
 			// DebugOverlay.ScreenText(CurrentMaxSpeed.ToString());
@@ -230,32 +224,6 @@ public partial class PawnController : Component
 
 		ForwardDirection = GetVelocityRotation().Forward.WithZ(0);
 	}
-
-	// [ConCmd.Server("noclip")]
-	// static void DoPlayerNoclip()
-	// {
-	// 	if (ConsoleSystem.Caller.Pawn is Pawn player)
-	// 	{
-	// 		if (player.Controller.Noclipping)
-	// 			player.Controller.Noclipping = false;
-	// 		else
-	// 		{
-	// 			player.Controller.Noclipping = true;
-	// 		}
-	// 	}
-	// }
-
-	// [ConCmd.Admin("unlimited_sprint")]
-	// static void DoUnlimitedSprint()
-	// {
-	// 	if (ConsoleSystem.Caller.Pawn is Pawn player)
-	// 	{
-	// 		if (player.Controller.UnlimitedSprint)
-	// 			player.Controller.UnlimitedSprint = false;
-	// 		else
-	// 			player.Controller.UnlimitedSprint = true;
-	// 	}
-	// }
 
 	public bool HasEvent(string eventName)
 	{

@@ -72,45 +72,6 @@ public partial class Pawn : Component
 
 	bool IsThirdPerson { get; set; } = false;
 
-	/// <summary>
-	/// Called when the entity is first created
-	/// </summary>
-	/*
-	public override void Spawn()
-	{
-	    SetModel("models/faith_v2.vmdl");
-
-	    EnableDrawing = true;
-	    EnableHideInFirstPerson = false;
-	    EnableShadowInFirstPerson = true;
-
-	    CameraHelper = new AnimatedEntity();
-	    CameraHelper.Position = Position + Model.GetBoneTransform("CameraJoint").Position;
-	    CameraHelper.SetParent(this, "CameraJoint");
-
-	    PostProcessing = Camera.Main.FindOrCreateHook<CameraPostProcessing>();
-
-	    EnableShadowCasting = false;
-
-	    ShadowModel = new("models/faith_shadow.vmdl");
-	    ShadowModel.SetParent(this, true);
-	    ShadowModel.EnableShadowOnly = true;
-	    ShadowModel.EnableShadowCasting = true;
-	}
-	*/
-
-	// public override void Simulate(IClient cl)
-	// {
-	// 	UpdateAnimParameters();
-	// 	SimulateRotation();
-	// 	Controller?.Simulate(cl);
-	// 	Animator?.Simulate();
-
-	// 	UpdatePostProcessing();
-
-	// 	TimeSinceSnap += Time.Delta;
-	// }
-
 	protected override void OnUpdate()
 	{
 		if (IsProxy)
