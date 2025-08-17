@@ -20,7 +20,6 @@
 					{
 						m_id = 2925321
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "VaultOntoHigh"
@@ -42,7 +41,6 @@
 					{
 						m_id = 85639047
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_inputConnection = 
 					{
@@ -71,7 +69,6 @@
 					{
 						m_id = 92405404
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "vaultontohigh02"
@@ -93,7 +90,6 @@
 					{
 						m_id = 193071257
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "WallrunLeft"
@@ -115,7 +111,6 @@
 					{
 						m_id = 201185235
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "crouchstill"
@@ -137,7 +132,6 @@
 					{
 						m_id = 369569741
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_children = 
 					[
@@ -198,7 +192,6 @@
 					{
 						m_id = 372833420
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "HangHeaveUp"
@@ -220,7 +213,6 @@
 					{
 						m_id = 439928995
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "jumpair"
@@ -242,7 +234,6 @@
 					{
 						m_id = 490926714
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "dodgejumpright"
@@ -264,7 +255,6 @@
 					{
 						m_id = 494080296
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "dodgejumpleft"
@@ -286,7 +276,6 @@
 					{
 						m_id = 517529659
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -333,6 +322,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -413,6 +403,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -469,7 +460,6 @@
 					{
 						m_id = 623187157
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "runfwd"
@@ -491,7 +481,6 @@
 					{
 						m_id = 663434576
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -518,6 +507,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -555,6 +545,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -615,6 +606,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -652,6 +644,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -764,7 +757,6 @@
 					{
 						m_id = 749727750
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "walkfwd"
@@ -786,7 +778,6 @@
 					{
 						m_id = 756985540
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -813,6 +804,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -880,6 +872,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -936,7 +929,6 @@
 					{
 						m_id = 862611940
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -970,6 +962,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1035,8 +1028,9 @@
 										m_id = 2079760606
 									}
 									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = true
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1072,8 +1066,9 @@
 										m_id = 906493980
 									}
 									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1139,8 +1134,9 @@
 										m_id = 2077090191
 									}
 									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1176,8 +1172,9 @@
 										m_id = 1596594236
 									}
 									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1243,8 +1240,9 @@
 										m_id = 906493980
 									}
 									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1301,7 +1299,6 @@
 					{
 						m_id = 916050121
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -1335,6 +1332,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1402,6 +1400,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1458,7 +1457,6 @@
 					{
 						m_id = 954346702
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -1492,6 +1490,7 @@
 									m_bReset = false
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1559,6 +1558,7 @@
 									m_bReset = false
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1615,7 +1615,6 @@
 					{
 						m_id = 974541017
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "VaultOver"
@@ -1637,7 +1636,6 @@
 					{
 						m_id = 1056364800
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "WallRunVertical"
@@ -1659,7 +1657,6 @@
 					{
 						m_id = 1209336584
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "WallrunRight"
@@ -1681,7 +1678,6 @@
 					{
 						m_id = 1284783792
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "jumpfast"
@@ -1703,7 +1699,6 @@
 					{
 						m_id = 1308160069
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "VaultOnto"
@@ -1725,7 +1720,6 @@
 					{
 						m_id = 1312549577
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "wallrunleftstart"
@@ -1747,7 +1741,6 @@
 					{
 						m_id = 1326700524
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "wallrunverticalstart"
@@ -1769,7 +1762,6 @@
 					{
 						m_id = 1430291506
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "CrouchSlide"
@@ -1791,7 +1783,6 @@
 					{
 						m_id = 1538146346
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "Stand"
@@ -1813,7 +1804,6 @@
 					{
 						m_id = 1655659142
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "wallrunrightstart"
@@ -1835,7 +1825,6 @@
 					{
 						m_id = 1686727761
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -1869,6 +1858,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1906,6 +1896,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1943,6 +1934,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -1980,6 +1972,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2017,6 +2010,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2054,6 +2048,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2121,6 +2116,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2158,6 +2154,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2195,6 +2192,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2262,6 +2260,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2299,6 +2298,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2366,6 +2366,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2433,6 +2434,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2500,6 +2502,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2567,6 +2570,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2604,6 +2608,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2671,6 +2676,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2727,7 +2733,6 @@
 					{
 						m_id = 1899670735
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -2761,6 +2766,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2798,6 +2804,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2865,6 +2872,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2932,6 +2940,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -2988,7 +2997,6 @@
 					{
 						m_id = 1923544853
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -3039,7 +3047,6 @@
 					{
 						m_id = 1984345074
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "crouchfwd"
@@ -3061,7 +3068,6 @@
 					{
 						m_id = 2014235968
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_states = 
 					[
@@ -3095,6 +3101,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -3162,6 +3169,7 @@
 									m_bReset = true
 									m_resetCycleOption = "Beginning"
 									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = false
 									m_blendCurve = 
 									{
 										m_vControlPoint1 = [ 0.5, 0.0 ]
@@ -3218,7 +3226,6 @@
 					{
 						m_id = 2100532318
 					}
-					m_networkMode = "ServerAuthoritative"
 					m_sNote = ""
 					m_tagSpans = [  ]
 					m_sequenceName = "SprintFwd"
@@ -3241,14 +3248,11 @@
 					m_id = 1554278289
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_fDefaultValue = 0.0
 				m_fMinValue = 0.0
 				m_fMaxValue = 1000.0
-				m_bInterpolate = false
 			},
 			{
 				_class = "CBoolAnimParameter"
@@ -3258,10 +3262,8 @@
 					m_id = 1731058928
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_bDefaultValue = false
 			},
 			{
@@ -3272,10 +3274,8 @@
 					m_id = 2006770550
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_defaultValue = 0
 				m_enumOptions = 
 				[
@@ -3292,10 +3292,8 @@
 					m_id = 1892180665
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_defaultValue = 0
 				m_enumOptions = 
 				[
@@ -3312,10 +3310,8 @@
 					m_id = 2061745515
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_defaultValue = 0
 				m_enumOptions = 
 				[
@@ -3333,10 +3329,8 @@
 					m_id = 300445329
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_bDefaultValue = false
 			},
 			{
@@ -3347,10 +3341,8 @@
 					m_id = 658687189
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_defaultValue = 0
 				m_enumOptions = 
 				[
@@ -3367,14 +3359,11 @@
 					m_id = 1909455907
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_fDefaultValue = 0.0
 				m_fMinValue = 0.0
 				m_fMaxValue = 1000.0
-				m_bInterpolate = false
 			},
 			{
 				_class = "CBoolAnimParameter"
@@ -3384,10 +3373,8 @@
 					m_id = 1226064506
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_bDefaultValue = false
 			},
 			{
@@ -3398,10 +3385,8 @@
 					m_id = 2095078046
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_bDefaultValue = false
 			},
 			{
@@ -3412,10 +3397,8 @@
 					m_id = 2118308265
 				}
 				m_previewButton = "ANIMPARAM_BUTTON_NONE"
-				m_bNetwork = true
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
-				m_bPredicted = false
 				m_bDefaultValue = false
 			},
 		]
@@ -3450,8 +3433,6 @@
 			},
 			{
 				_class = "CAnimGraphNetworkSettings"
-				m_bNetworkingEnabled = true
-				m_defaultNetworkMode = "ServerAuthoritative"
 			},
 		]
 	}
