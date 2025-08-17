@@ -24,20 +24,35 @@ public partial class PawnController : Component
 	public float Acceleration => 0.02f;
 	public float StartFootSoundVelocity => 300f;
 	public int MaxClimbAmount => 4;
+
+	[Property]
 	public bool Climbing { get; set; }
+
+	[Property]
 	public WallRunSide Wallrunning { get; set; }
+
+	[Property]
 	public int Dashing { get; set; }
 	public bool UnlimitedSprint { get; set; }
+
+	[Property]
 	public VaultType Vaulting { get; set; }
+
 	public float TimeSinceDash { get; set; }
 	public Vector3 ForwardDirection { get; set; }
 	public float TimeSinceClimbing { get; set; }
 	public float TimeSinceWallrun { get; set; }
 	public float TimeSinceSlideStopped { get; set; }
 	public SceneTraceResult CurrentWall { get; set; } = new SceneTraceResult();
+
+	[Property]
 	public bool Jumping { get; set; }
 	public Vector3 VaultTargetPos { get; set; }
+
+	[Property]
 	public bool Ducking { get; set; }
+
+	[Property]
 	public bool Sliding { get; set; }
 
 	private int CurrentClimbAmount { get; set; }
@@ -48,7 +63,9 @@ public partial class PawnController : Component
 
 	private float bezierCounter = 0f;
 	private float vaultSpeed = 0f;
-	private bool debugMode => false;
+
+	[Property]
+	public bool debugMode { get; set; }
 	private bool parkouredSinceJumping = false;
 	private bool wallrunSinceJumping = false;
 	private Vector3 previousWallrunNormal = Vector3.Zero;
@@ -141,9 +158,16 @@ public partial class PawnController : Component
 
 		if (Input.Pressed("jump"))
 		{
+			if (Jumping)
+				return;
+
 			if (IsWallRunning())
 			{
 				InitiateJumpOffWall();
+			}
+			else if (TimeSinceClimbing < 0.5f && Pawn.TimeSinceSnap < 0.5f)
+			{
+				InitiateJumpOffWallSnapTurned();
 			}
 
 			if (CanJump())

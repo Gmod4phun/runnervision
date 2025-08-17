@@ -41,7 +41,7 @@ public partial class Pawn : Component
 	}
 
 	private Rotation cameraStartRotation { get; set; }
-	private float TimeSinceSnap { get; set; }
+	public float TimeSinceSnap { get; set; }
 	private Vector3 CurrentCameraOffset { get; set; }
 
 	public BBox Hull
@@ -283,6 +283,10 @@ public partial class Pawn : Component
 		{
 			CameraNewAngles = Controller.CurrentWall.Normal.EulerAngles;
 		}
+		else if (Controller.Climbing)
+		{
+			CameraNewAngles = Controller.CurrentWall.Normal.EulerAngles.WithPitch(-15f);
+		}
 		else
 		{
 			CameraNewAngles = (ViewAngles.Forward * -1f).EulerAngles.WithPitch(0);
@@ -298,6 +302,7 @@ public partial class Pawn : Component
 		{
 			LookTowardsSnap();
 			TimeSinceSnap = 0f;
+			Controller.Jumping = false;
 		}
 	}
 

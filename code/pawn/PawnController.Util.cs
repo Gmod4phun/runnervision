@@ -56,6 +56,19 @@ public partial class PawnController
 
 		previousWallrunNormal = CurrentWall.Normal;
 		Wallrunning = 0;
+
+		Jumping = true;
+	}
+
+	void InitiateJumpOffWallSnapTurned()
+	{
+		var forwardAngle = GetCameraDirection();
+		var jumpVector = forwardAngle * 150f + Pawn.WorldRotation.Up * 300f;
+
+		Pawn.Velocity = Pawn.Velocity * 0.5f;
+		Pawn.Velocity += jumpVector;
+
+		Jumping = true;
 	}
 
 	Vector3 GetCameraDirection()

@@ -116,6 +116,8 @@ public partial class PawnController
 			Pawn.Velocity = (Pawn.Velocity * 0.8f + ForwardDirection * 100f).WithZ(velocityZ);
 		}
 
+		Jumping = false;
+
 		Wallrunning = traceWall.side;
 		previousWallrunNormal = traceWall.traceResult.Normal;
 
