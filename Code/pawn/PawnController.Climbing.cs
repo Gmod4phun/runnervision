@@ -153,7 +153,7 @@ public partial class PawnController
 
 			Pawn.Velocity +=
 				Pawn.WorldRotation.Up * 100f + Pawn.WorldRotation.Up * addHorizontalSpeed;
-			Pawn.Velocity *= 0.85f;
+			Pawn.Velocity *= 0.75f;
 
 			TimeSinceClimbing = 0f;
 			CurrentClimbAmount++;

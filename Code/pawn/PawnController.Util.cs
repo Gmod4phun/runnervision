@@ -63,7 +63,7 @@ public partial class PawnController
 	void InitiateJumpOffWallSnapTurned()
 	{
 		var forwardAngle = GetCameraDirection();
-		var jumpVector = forwardAngle * 100f + Pawn.WorldRotation.Up * 50f;
+		var jumpVector = forwardAngle * 150f + Pawn.WorldRotation.Up * 100f;
 
 		Pawn.Velocity = Pawn.Velocity * 0.5f;
 		Pawn.Velocity += jumpVector;
