@@ -63,7 +63,7 @@ public partial class PawnController
 	void InitiateJumpOffWallSnapTurned()
 	{
 		var forwardAngle = GetCameraDirection();
-		var jumpVector = forwardAngle * 150f + Pawn.WorldRotation.Up * 300f;
+		var jumpVector = forwardAngle * 100f + Pawn.WorldRotation.Up * 50f;
 
 		Pawn.Velocity = Pawn.Velocity * 0.5f;
 		Pawn.Velocity += jumpVector;
@@ -122,7 +122,17 @@ public partial class PawnController
 
 	void DoFall()
 	{
-		Pawn.Velocity += Vector3.Down * (IsWallRunning() ? Gravity * 0.60f : Gravity) * Time.Delta;
+		var targetGravity = Gravity;
+		if (IsWallRunning())
+		{
+			targetGravity *= 0.60f;
+		}
+		else if (IsSnapTurningAfterClimb())
+		{
+			targetGravity *= 0.20f;
+		}
+
+		Pawn.Velocity += Vector3.Down * targetGravity * Time.Delta;
 	}
 
 	void InitiateLandingOnFloor()
@@ -205,6 +215,7 @@ public partial class PawnController
 		TimeSinceLastFootstepRelease += Time.Delta;
 		TimeSinceDash += Time.Delta;
 		TimeSinceClimbing += Time.Delta;
+		TimeSinceClimbingStopped += Time.Delta;
 		TimeSinceWallrun += Time.Delta;
 		TimeSinceSlideStopped += Time.Delta;
 		TimeSinceSnap += Time.Delta;
@@ -449,5 +460,10 @@ public partial class PawnController
 	float GetHorizontalSpeed()
 	{
 		return Pawn.Velocity.WithZ(0).Length;
+	}
+
+	public bool IsSnapTurningAfterClimb()
+	{
+		return TimeSinceClimbingStopped < 0.5f && TimeSinceSnap < 0.5f;
 	}
 }

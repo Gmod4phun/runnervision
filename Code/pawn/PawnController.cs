@@ -39,9 +39,15 @@ public partial class PawnController : Component
 
 	public float TimeSinceDash { get; set; }
 	public Vector3 ForwardDirection { get; set; }
+
+	[Property]
 	public float TimeSinceClimbing { get; set; }
 	public float TimeSinceWallrun { get; set; }
 	public float TimeSinceSlideStopped { get; set; }
+
+	[Property]
+	public float TimeSinceClimbingStopped { get; set; }
+
 	public SceneTraceResult CurrentWall { get; set; } = new SceneTraceResult();
 
 	[Property]
@@ -166,7 +172,7 @@ public partial class PawnController : Component
 			{
 				InitiateJumpOffWall();
 			}
-			else if (TimeSinceClimbing < 0.5f && TimeSinceSnap < 0.5f)
+			else if (IsSnapTurningAfterClimb())
 			{
 				InitiateJumpOffWallSnapTurned();
 			}

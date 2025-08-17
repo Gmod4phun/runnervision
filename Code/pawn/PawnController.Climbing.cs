@@ -115,6 +115,7 @@ public partial class PawnController
 
 	void InitiateClimbing(SceneTraceResult traceFront)
 	{
+		Jumping = false;
 		Climbing = true;
 		CurrentWall = traceFront;
 
@@ -132,7 +133,11 @@ public partial class PawnController
 
 	void StopClimbing()
 	{
-		Climbing = false;
+		if (IsClimbing())
+		{
+			Climbing = false;
+			TimeSinceClimbingStopped = 0;
+		}
 	}
 
 	void DoClimbing()
