@@ -80,6 +80,11 @@ public partial class PawnController : Component
 		// DebugOverlay.ScreenText("Current Accel: " + CurrentMaxSpeed.ToString(), line: 12);
 		// DebugOverlay.ScreenText("Max Accel: " + MaxSpeed.ToString(), line: 13);
 
+		if (Input.Pressed("score"))
+		{
+			Noclipping = !Noclipping;
+		}
+
 		if (Noclipping)
 		{
 			// TODO: don't return here
