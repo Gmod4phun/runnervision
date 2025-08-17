@@ -41,7 +41,6 @@ public partial class Pawn : Component
 	}
 
 	private Rotation cameraStartRotation { get; set; }
-	public float TimeSinceSnap { get; set; }
 	private Vector3 CurrentCameraOffset { get; set; }
 
 	public BBox Hull
@@ -143,8 +142,6 @@ public partial class Pawn : Component
 		// SimulateRotation();
 		Controller?.Simulate();
 		// Animator?.Simulate();
-
-		TimeSinceSnap += Time.Delta;
 	}
 
 	void UpdateAnimParameters()
@@ -230,7 +227,7 @@ public partial class Pawn : Component
 		UpdateCameraOffset();
 		Camera.WorldPosition = WorldPosition + CurrentCameraOffset;
 
-		if (TimeSinceSnap < 0.5f)
+		if (Controller.TimeSinceSnap < 0.5f)
 		{
 			CameraRotateToNewPosition(15f);
 		}
@@ -251,8 +248,6 @@ public partial class Pawn : Component
 				LookTowardsVaultTarget();
 			}
 		}
-
-		CheckForSnap();
 	}
 
 	private void UpdateCameraOffset()
@@ -277,7 +272,7 @@ public partial class Pawn : Component
 		return 10f;
 	}
 
-	private void LookTowardsSnap()
+	public void LookTowardsSnap()
 	{
 		if (Controller.IsWallRunning())
 		{
@@ -290,19 +285,6 @@ public partial class Pawn : Component
 		else
 		{
 			CameraNewAngles = (ViewAngles.Forward * -1f).EulerAngles.WithPitch(0);
-		}
-	}
-
-	private void CheckForSnap()
-	{
-		if (TimeSinceSnap < 0.5f)
-			return;
-
-		if (Input.Pressed("Snap Turn 180 degrees"))
-		{
-			LookTowardsSnap();
-			TimeSinceSnap = 0f;
-			Controller.Jumping = false;
 		}
 	}
 

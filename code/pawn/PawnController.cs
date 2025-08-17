@@ -59,6 +59,8 @@ public partial class PawnController : Component
 	public float CurrentMaxSpeed { get; set; }
 	private float TimeSinceLastFootstep { get; set; }
 	private float TimeSinceLastFootstepRelease { get; set; }
+
+	public float TimeSinceSnap { get; set; }
 	private Vector3 VaultStartPos { get; set; }
 
 	private float bezierCounter = 0f;
@@ -165,7 +167,7 @@ public partial class PawnController : Component
 			{
 				InitiateJumpOffWall();
 			}
-			else if (TimeSinceClimbing < 0.5f && Pawn.TimeSinceSnap < 0.5f)
+			else if (TimeSinceClimbing < 0.5f && TimeSinceSnap < 0.5f)
 			{
 				InitiateJumpOffWallSnapTurned();
 			}
@@ -192,6 +194,15 @@ public partial class PawnController : Component
 		{
 			if (IsDucking() && !IsSliding())
 				StopDucking();
+		}
+
+		if (Input.Pressed("Snap Turn 180 degrees"))
+		{
+			if (TimeSinceSnap < 0.5f)
+				return;
+
+			Pawn.LookTowardsSnap();
+			TimeSinceSnap = 0f;
 		}
 
 		UpdateDash();
