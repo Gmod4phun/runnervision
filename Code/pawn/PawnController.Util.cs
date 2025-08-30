@@ -144,7 +144,7 @@ public partial class PawnController
 		previousWallrunNormal = Vector3.Zero;
 
 		parkouredSinceJumping = false;
-		parkouredBeforeLanding = false;
+		// parkouredBeforeLanding = false;
 
 		Jumping = false;
 

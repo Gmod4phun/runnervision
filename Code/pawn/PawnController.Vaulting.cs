@@ -63,7 +63,7 @@ public partial class PawnController
 	void SetupVault()
 	{
 		parkouredSinceJumping = true;
-		parkouredBeforeLanding = true;
+		// parkouredBeforeLanding = true;
 
 		VaultStartPos = Pawn.WorldPosition;
 		bezierCounter = 0f;

@@ -122,7 +122,7 @@ public partial class PawnController
 		previousWallrunNormal = traceWall.traceResult.Normal;
 
 		wallrunSinceJumping = true;
-		parkouredBeforeLanding = true;
+		// parkouredBeforeLanding = true;
 
 		TimeSinceWallrun = 0f;
 	}

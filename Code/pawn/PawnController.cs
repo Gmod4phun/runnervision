@@ -76,7 +76,8 @@ public partial class PawnController : Component
 	private bool parkouredSinceJumping = false;
 	private bool wallrunSinceJumping = false;
 	private Vector3 previousWallrunNormal = Vector3.Zero;
-	private bool parkouredBeforeLanding = false;
+
+	// private bool parkouredBeforeLanding = false;
 
 	HashSet<string> ControllerEvents = new(StringComparer.OrdinalIgnoreCase);
 
