@@ -45,6 +45,9 @@ namespace Sandbox
 		public float Speed => Velocity.Length;
 
 		[Property, ReadOnly]
+		public float HorizontalSpeed => Velocity.WithZ(0).Length;
+
+		[Property, ReadOnly]
 		public float KMH => MathX.InchToMeter(Speed) * 3.6f;
 
 		[Property]
@@ -54,6 +57,9 @@ namespace Sandbox
 
 		[Property]
 		public bool Jumping { get; set; }
+
+		[Property]
+		public ParkourPlayer.JumpType JumpType { get; set; }
 
 		[Property]
 		public ParkourPlayer Player => Components.Get<ParkourPlayer>();
@@ -76,6 +82,17 @@ namespace Sandbox
 			}
 
 			return 1f;
+		}
+
+		void UpdateJumpType()
+		{
+			JumpType = ParkourPlayer.JumpType.Still;
+
+			if (HorizontalSpeed > 50)
+				JumpType = ParkourPlayer.JumpType.Slow;
+
+			if (HorizontalSpeed > 150)
+				JumpType = ParkourPlayer.JumpType.Fast;
 		}
 
 		public void Accelerate(Vector3 vector)
@@ -133,10 +150,10 @@ namespace Sandbox
 				return;
 			}
 
-			if (Velocity.WithZ(0).Length > MoveLimit)
-			{
-				Velocity = Velocity.WithZ(0).Normal * MoveLimit;
-			}
+			// if (Grounded && Velocity.WithZ(0).Length > MoveLimit)
+			// {
+			// 	Velocity = Velocity.Normal * MoveLimit;
+			// }
 
 			var startPos = GameObject.WorldPosition;
 			var helper = new CharacterControllerHelper(
@@ -338,6 +355,8 @@ namespace Sandbox
 
 				mult *= mult;
 
+				mult *= Time.Delta * 160;
+
 				MoveLimit = Math.Clamp(MoveLimit + mult, 0, MaxSpeedRunning);
 			}
 			else
@@ -373,7 +392,8 @@ namespace Sandbox
 			if (Input.Pressed("jump") && Grounded)
 			{
 				Jumping = true;
-				Punch(Vector3.Up * 350);
+				Punch(Vector3.Up * 630 * 0.5f);
+				UpdateJumpType();
 			}
 
 			DoMove();

@@ -2,6 +2,14 @@ using Sandbox;
 
 public class ParkourPlayer : Component, Component.ExecuteInEditor
 {
+	public enum JumpType
+	{
+		Still,
+		Slow,
+		Fast,
+		Air
+	}
+
 	[Property]
 	public SkinnedModelRenderer Lower { get; set; }
 
@@ -21,10 +29,6 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 
 	[Property, Range(0, 1), Step(0.01f)]
 	public float FollowCameraBlend { get; set; }
-
-	public bool Grounded => Controller.Grounded;
-
-	public bool Jumping => Controller.Jumping;
 
 	public ParkourController Controller => Components.Get<ParkourController>();
 
@@ -64,9 +68,14 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 		Lower.LocalPosition += Lower.RootMotion.Position;
 		Lower.LocalRotation *= Lower.RootMotion.Rotation;
 
+		if (Controller.HorizontalSpeed > 5)
+		{
+			Lower.LocalRotation = Upper.LocalRotation;
+		}
+
 		var yawDiff = Rotation.Difference(Upper.LocalRotation, Lower.LocalRotation).Yaw();
 
-		var canRepositionLegs = Grounded;
+		var canRepositionLegs = Controller.Grounded;
 
 		if (yawDiff > 45 || yawDiff < -45)
 		{
@@ -209,8 +218,22 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 
 	void HandleAnimgraphParameters()
 	{
-		Lower.Set("jumping", Jumping);
-		Upper.Set("jumping", Jumping);
+		foreach (var r in new[] { Lower, Upper })
+		{
+			r.Set("airborne", !Controller.Grounded);
+			r.Set("jumping", Controller.Jumping);
+			r.Set("horizontal_speed", Controller.HorizontalSpeed);
+			r.Set("jump_type", (int)Controller.JumpType);
+		}
+
+		if (Controller.Jumping || Controller.HorizontalSpeed > 150)
+		{
+			HandsFollowCameraVertical = true;
+		}
+		else
+		{
+			HandsFollowCameraVertical = false;
+		}
 	}
 
 	protected override void OnUpdate()
