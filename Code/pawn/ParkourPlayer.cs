@@ -22,6 +22,9 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 	[Property]
 	public Vector2 ViewAngles { get; set; }
 
+	public bool CanControlViewAngles = true;
+	public bool ShouldResetViewAngles = false;
+
 	Transform cameraDesiredTransform;
 
 	[Property]
@@ -33,6 +36,7 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 	public ParkourController Controller => Components.Get<ParkourController>();
 
 	public Vector3 InputDirection { get; set; }
+	public bool CanControlInputDirection = true;
 
 	public BBox Hull
 	{
@@ -65,7 +69,7 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 
 	void HandleLowerBodyTransform()
 	{
-		Lower.LocalPosition += Lower.RootMotion.Position;
+		// Lower.LocalPosition += Lower.RootMotion.Position;
 		Lower.LocalRotation *= Lower.RootMotion.Rotation;
 
 		if (Controller.HorizontalSpeed > 5)
@@ -110,16 +114,36 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 
 	void BuildInput()
 	{
-		var look = Input.AnalogLook;
+		if (CanControlViewAngles)
+		{
+			var look = Input.AnalogLook;
 
-		var viewAngles = ViewAngles;
-		viewAngles.x -= look.yaw;
-		viewAngles.y -= look.pitch;
-		viewAngles.x = viewAngles.x.UnsignedMod(360f);
-		viewAngles.y = viewAngles.y.Clamp(-90f, 90);
-		ViewAngles = viewAngles;
+			var viewAngles = ViewAngles;
+			viewAngles.x -= look.yaw;
+			viewAngles.y -= look.pitch;
+			viewAngles.x = viewAngles.x.UnsignedMod(360f);
+			viewAngles.y = viewAngles.y.Clamp(-90f, 90);
+			ViewAngles = viewAngles;
+		}
 
-		InputDirection = Input.AnalogMove;
+		if (CanControlInputDirection)
+		{
+			InputDirection = Input.AnalogMove;
+		}
+		else
+		{
+			InputDirection = Vector2.Zero;
+		}
+	}
+
+	void HandleResetViewAngles()
+	{
+		if (ShouldResetViewAngles)
+		{
+			var viewAngles = ViewAngles;
+			viewAngles.y = viewAngles.y.LerpTo(0, Time.Delta * 10);
+			ViewAngles = viewAngles;
+		}
 	}
 
 	// swan neck forward, swan neck down
@@ -242,6 +266,7 @@ public class ParkourPlayer : Component, Component.ExecuteInEditor
 			return;
 
 		BuildInput();
+		HandleResetViewAngles();
 		AdjustCameraBlendVales();
 
 		HandleUpperBodyTransform();

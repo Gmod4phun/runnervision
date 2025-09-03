@@ -27,18 +27,6 @@ namespace Sandbox
 		[Property, Group("Collision")]
 		public TagSet IgnoreLayers { get; set; } = new TagSet();
 
-		[Property, Group("Acceleration")]
-		public Curve AccelerationCurve { get; set; } =
-			new Curve(
-				new Curve.Frame[]
-				{
-					new(0f, 1f), // At 0% speed, 100% acceleration
-					new(0.5f, 0.8f), // At 50% speed, 80% acceleration
-					new(0.8f, 0.4f), // At 80% speed, 40% acceleration
-					new(1f, 0.1f) // At 100% speed, 10% acceleration
-				}
-			);
-
 		public Vector3 Velocity { get; set; }
 
 		[Property, ReadOnly]
@@ -369,6 +357,8 @@ namespace Sandbox
 
 		void DoLand()
 		{
+			Log.Info($"Landing velocity is {Velocity.z}");
+
 			if (Jumping)
 			{
 				Jumping = false;
@@ -378,6 +368,20 @@ namespace Sandbox
 			{
 				Log.Info("landed from fall");
 			}
+
+			// ResetViewAnglesFor(2f);
+		}
+
+		async void ResetViewAnglesFor(float duration)
+		{
+			Player.CanControlViewAngles = false;
+			Player.CanControlInputDirection = false;
+			Player.ShouldResetViewAngles = true;
+
+			await GameTask.DelaySeconds(duration);
+			Player.ShouldResetViewAngles = false;
+			Player.CanControlViewAngles = true;
+			Player.CanControlInputDirection = true;
 		}
 
 		protected override void OnUpdate()
