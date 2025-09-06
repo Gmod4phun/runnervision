@@ -1191,44 +1191,6 @@
 									[
 										{
 											_class = "CParameterAnimCondition"
-											m_comparisonOp = 2
-											m_paramID = 
-											{
-												m_id = 1909455907
-											}
-											m_comparisonValue = 
-											{
-												m_nType = 4
-												m_data = 240.0
-											}
-										},
-									]
-									m_blendDuration = 0.5
-									m_destState = 
-									{
-										m_id = 271445026
-									}
-									m_bReset = true
-									m_resetCycleOption = "SameCycleAsSource"
-									m_flFixedCycleValue = 0.0
-									m_bBlendCycle = false
-									m_blendCurve = 
-									{
-										m_vControlPoint1 = [ 0.5, 0.0 ]
-										m_vControlPoint2 = [ 0.5, 1.0 ]
-									}
-									m_bForceFootPlant = false
-									m_bDisabled = false
-									m_bRandomTimeBetween = false
-									m_flRandomTimeStart = 0.0
-									m_flRandomTimeEnd = 0.0
-								},
-								{
-									_class = "CAnimStateTransition"
-									m_conditions = 
-									[
-										{
-											_class = "CParameterAnimCondition"
 											m_comparisonOp = 4
 											m_paramID = 
 											{
@@ -1246,14 +1208,52 @@
 									{
 										m_id = 33339635
 									}
-									m_bReset = true
+									m_bReset = false
 									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
-									m_bBlendCycle = false
+									m_bBlendCycle = true
 									m_blendCurve = 
 									{
-										m_vControlPoint1 = [ 0.5, 0.0 ]
-										m_vControlPoint2 = [ 0.5, 1.0 ]
+										m_vControlPoint1 = [ 0.0, 0.0 ]
+										m_vControlPoint2 = [ 1.0, 1.0 ]
+									}
+									m_bForceFootPlant = false
+									m_bDisabled = false
+									m_bRandomTimeBetween = false
+									m_flRandomTimeStart = 0.0
+									m_flRandomTimeEnd = 0.0
+								},
+								{
+									_class = "CAnimStateTransition"
+									m_conditions = 
+									[
+										{
+											_class = "CParameterAnimCondition"
+											m_comparisonOp = 2
+											m_paramID = 
+											{
+												m_id = 1909455907
+											}
+											m_comparisonValue = 
+											{
+												m_nType = 4
+												m_data = 240.0
+											}
+										},
+									]
+									m_blendDuration = 0.5
+									m_destState = 
+									{
+										m_id = 271445026
+									}
+									m_bReset = false
+									m_resetCycleOption = "SameCycleAsSource"
+									m_flFixedCycleValue = 0.0
+									m_bBlendCycle = true
+									m_blendCurve = 
+									{
+										m_vControlPoint1 = [ 0.0, 0.0 ]
+										m_vControlPoint2 = [ 1.0, 1.0 ]
 									}
 									m_bForceFootPlant = false
 									m_bDisabled = false
@@ -1280,7 +1280,7 @@
 							{
 								m_id = 441292562
 							}
-							m_position = [ -336.0, -112.0 ]
+							m_position = [ -336.0, -128.0 ]
 							m_bIsStartState = false
 							m_bIsEndtState = false
 							m_bIsPassthrough = false
@@ -1314,14 +1314,14 @@
 									{
 										m_id = 441292562
 									}
-									m_bReset = true
+									m_bReset = false
 									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
-									m_bBlendCycle = false
+									m_bBlendCycle = true
 									m_blendCurve = 
 									{
-										m_vControlPoint1 = [ 0.5, 0.0 ]
-										m_vControlPoint2 = [ 0.5, 1.0 ]
+										m_vControlPoint1 = [ 0.0, 0.0 ]
+										m_vControlPoint2 = [ 1.0, 1.0 ]
 									}
 									m_bForceFootPlant = false
 									m_bDisabled = false
@@ -1348,7 +1348,7 @@
 							{
 								m_id = 271445026
 							}
-							m_position = [ -336.0, 48.0 ]
+							m_position = [ -336.0, 16.0 ]
 							m_bIsStartState = false
 							m_bIsEndtState = false
 							m_bIsPassthrough = false
@@ -1377,19 +1377,19 @@
 											}
 										},
 									]
-									m_blendDuration = 0.2
+									m_blendDuration = 0.5
 									m_destState = 
 									{
 										m_id = 441292562
 									}
-									m_bReset = true
+									m_bReset = false
 									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
-									m_bBlendCycle = false
+									m_bBlendCycle = true
 									m_blendCurve = 
 									{
-										m_vControlPoint1 = [ 0.5, 0.0 ]
-										m_vControlPoint2 = [ 0.5, 1.0 ]
+										m_vControlPoint1 = [ 0.0, 0.0 ]
+										m_vControlPoint2 = [ 1.0, 1.0 ]
 									}
 									m_bForceFootPlant = false
 									m_bDisabled = false
@@ -1420,14 +1420,14 @@
 									{
 										m_id = 342189504
 									}
-									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_bReset = false
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
-									m_bBlendCycle = false
+									m_bBlendCycle = true
 									m_blendCurve = 
 									{
-										m_vControlPoint1 = [ 0.5, 0.0 ]
-										m_vControlPoint2 = [ 0.5, 1.0 ]
+										m_vControlPoint1 = [ 0.0, 0.0 ]
+										m_vControlPoint2 = [ 1.0, 1.0 ]
 									}
 									m_bForceFootPlant = false
 									m_bDisabled = false
@@ -1488,14 +1488,14 @@
 									{
 										m_id = 33339635
 									}
-									m_bReset = true
-									m_resetCycleOption = "Beginning"
+									m_bReset = false
+									m_resetCycleOption = "SameCycleAsSource"
 									m_flFixedCycleValue = 0.0
-									m_bBlendCycle = false
+									m_bBlendCycle = true
 									m_blendCurve = 
 									{
-										m_vControlPoint1 = [ 0.5, 0.0 ]
-										m_vControlPoint2 = [ 0.5, 1.0 ]
+										m_vControlPoint1 = [ 0.0, 0.0 ]
+										m_vControlPoint2 = [ 1.0, 1.0 ]
 									}
 									m_bForceFootPlant = false
 									m_bDisabled = false
@@ -5246,6 +5246,80 @@
 					m_bLoop = true
 				}
 			},
+			{
+				key = 
+				{
+					m_id = 2128503296
+				}
+				value = 
+				{
+					_class = "CBlend2DAnimNode"
+					m_sName = "Crouch Move Blend"
+					m_vecPosition = [ 448.0, -1248.0 ]
+					m_nNodeID = 
+					{
+						m_id = 2128503296
+					}
+					m_sNote = ""
+					m_items = 
+					[
+						{
+							_class = "CBlend2DItem"
+							m_tagSpans = [  ]
+							m_sequenceName = "crouchfwd"
+							m_blendValue = [ 0.0, 1.0 ]
+						},
+						{
+							_class = "CBlend2DItem"
+							m_tagSpans = [  ]
+							m_sequenceName = "crouchbwd"
+							m_blendValue = [ 0.0, -1.0 ]
+						},
+						{
+							_class = "CBlend2DItem"
+							m_tagSpans = [  ]
+							m_sequenceName = "crouchstill"
+							m_blendValue = [ 0.0, 0.0 ]
+						},
+						{
+							_class = "CBlend2DItem"
+							m_tagSpans = [  ]
+							m_sequenceName = "CrouchLeft1"
+							m_blendValue = [ -1.0, 0.0 ]
+						},
+						{
+							_class = "CBlend2DItem"
+							m_tagSpans = [  ]
+							m_sequenceName = "crouchright1"
+							m_blendValue = [ 1.0, 0.0 ]
+						},
+					]
+					m_blendSourceX = "Parameter"
+					m_paramX = 
+					{
+						m_id = 493324788
+					}
+					m_blendSourceY = "Parameter"
+					m_paramY = 
+					{
+						m_id = 231511712
+					}
+					m_bLoop = true
+					m_bLockBlendOnReset = false
+					m_bLockWhenWaning = true
+					m_playbackSpeed = 1.0
+					m_damping = 
+					{
+						_class = "CAnimInputDamping"
+						m_speedFunction = "NoDamping"
+						m_fSpeedScale = 1.0
+						m_fMinSpeed = 10.0
+						m_fMaxTension = 1000.0
+						m_fTension = 100.0
+						m_fDamping = 5.0
+					}
+				}
+			},
 		]
 	}
 	m_pParameterList = 
@@ -5376,7 +5450,7 @@
 				m_bAutoReset = false
 				m_fDefaultValue = 0.0
 				m_fMinValue = 0.0
-				m_fMaxValue = 1000.0
+				m_fMaxValue = 350.0
 			},
 			{
 				_class = "CBoolAnimParameter"
@@ -5506,6 +5580,34 @@
 				m_bUseMostRecentValue = false
 				m_bAutoReset = false
 				m_bDefaultValue = false
+			},
+			{
+				_class = "CFloatAnimParameter"
+				m_name = "move_x"
+				m_id = 
+				{
+					m_id = 231511712
+				}
+				m_previewButton = "ANIMPARAM_BUTTON_NONE"
+				m_bUseMostRecentValue = false
+				m_bAutoReset = false
+				m_fDefaultValue = 0.0
+				m_fMinValue = -1.0
+				m_fMaxValue = 1.0
+			},
+			{
+				_class = "CFloatAnimParameter"
+				m_name = "move_y"
+				m_id = 
+				{
+					m_id = 493324788
+				}
+				m_previewButton = "ANIMPARAM_BUTTON_NONE"
+				m_bUseMostRecentValue = false
+				m_bAutoReset = false
+				m_fDefaultValue = 0.0
+				m_fMinValue = -1.0
+				m_fMaxValue = 1.0
 			},
 		]
 	}
